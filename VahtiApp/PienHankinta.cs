@@ -34,7 +34,7 @@ namespace VahtiApp
         /// this collects all province pages their offers lists.
         /// </summary>
         /// <returns></returns>
-        internal bool PuraAlaSivut()
+        internal override bool PuraAlaSivut()
         {
             if (lstrAlasivut.Count == 0) return false;
             bool bOk = ListastaÄäkösetPois();
@@ -83,7 +83,7 @@ namespace VahtiApp
         ///     MORE:  City,offertime,last question day
         /// </summary>
         /// <returns></returns>
-        internal bool PuraTarjousSivut()
+        internal override bool PuraTarjousSivut()
         {
             string strEtiEka = "Voimassa olevat tarjouspyyn";
             string strEiPyyntöjä = "Ei voimassa olevia pienhankintoja";
@@ -149,8 +149,8 @@ namespace VahtiApp
 
                                     string[] palat = strOsa.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
                                     Tarjous clTarjous = new Tarjous(strKunta);
-                                    clTarjous.strLinkki = palat[0].Remove(0, palat[0].LastIndexOf("=\"") + 3).Trim(charsToTrim);
-                                    clTarjous.strLinkki = clTarjous.strLinkki.Remove(clTarjous.strLinkki.IndexOf("\">") + 1);
+                                    clTarjous.strAlkuperainenLinkki = palat[0].Remove(0, palat[0].LastIndexOf("=\"") + 3).Trim(charsToTrim);
+                                    clTarjous.strAlkuperainenLinkki = clTarjous.strAlkuperainenLinkki.Remove(clTarjous.strAlkuperainenLinkki.IndexOf("\">") + 1);
                                     clTarjous.strTunnus = palat[0].Remove(0, palat[0].IndexOf(">") + 1).Replace("&nbsp;", " ").Replace("</a>", " ").Trim(charsToTrim);
                                     clTarjous.strPyynto = palat[1].Remove(0, palat[1].IndexOf("=") + 1).Replace("&nbsp;", " ").Trim(charsToTrim);
                                     clTarjous.strKuvaus = palat[2].Remove(0, palat[2].IndexOf("=") + 1).Replace("&nbsp;", " ").Trim(charsToTrim);
@@ -184,7 +184,7 @@ namespace VahtiApp
         /// <returns>
         /// List of new pages to collect data
         /// </returns>
-        internal bool PuraEtusivu()
+        internal override bool PuraEtusivu()
         {
             string strOtsikko = "title =";
             int iOtsikkoPit = strOtsikko.Length;
@@ -224,7 +224,7 @@ namespace VahtiApp
         ///     <tr class="otsikkorivi"><th>Tunniste</th><th>Tarjouspyynt&#246;</th>
         ///     <th>Kuvaus</th><th>M&#228;&#228;r&#228;aika</th><th>&nbsp;</th></tr>
 
-        internal List<string> HtmlToList(string strHtml)
+        internal override List<string> HtmlToList(string strHtml)
         {
             List<string> lstRetVal = new List<string>();
 

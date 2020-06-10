@@ -23,7 +23,8 @@ namespace VahtiApp
             if (bOk) bOk = clPienHankinta.PuraAlaSivut();
             Console.WriteLine($"PuraAlaSivut {bOk}");
             Console.WriteLine("strEHWReq");
-            foreach(var clTar in clPienHankinta.lstTajoukset)
+            clPienHankinta.lstTajoukset.Sort();
+            foreach (var clTar in clPienHankinta.lstTajoukset)
             {
                 Console.WriteLine(clTar);
             }
