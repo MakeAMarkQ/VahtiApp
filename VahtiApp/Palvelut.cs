@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Web.Globalization;
 using HtmlAgilityPack;
 using System.Linq;
+using System.Diagnostics;
 
 namespace VahtiApp
 {
@@ -16,6 +17,7 @@ namespace VahtiApp
         protected UriBuilder uriBuilder { get; set; }
         protected Uri uri { get; set; }
         protected string strEtusivu { get; set; }
+        protected string strSivuTiedosto { get; set; }
         protected List<string> lstrAlasivut;
         //public string strTempClient { get; set; }
         //public string strTempRest { get; set; }
@@ -47,9 +49,34 @@ namespace VahtiApp
             return true;
         }
         internal int sivuja() { return lstrAlasivut.Count; }
-        internal virtual bool PuraEtusivu() { return false; }
-        internal virtual bool PuraAlaSivut() { return false; }
-        internal virtual bool PuraTarjousSivut() { return false; }
+        internal virtual bool PuraEtusivu() { Trace.WriteLine("Virtual-PuraEtusivu"); return false; }
+        internal virtual bool PuraAlaSivut() { Trace.WriteLine("Virtual-PuraAlaSivut"); return false; }
+        internal virtual bool PuraTarjousSivut() { Trace.WriteLine("Virtual-PuraTarjousSivut"); return false; }
+        internal virtual string Tallenne() { Trace.WriteLine("Virtual-PuraTarjousSivut"); return "N/A"; }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool LataaTiedot(string inSivut)
+        {
+            //lstrAlasivut
+            if (File.Exists(inSivut))
+            {
+                string[] asSivut = File.ReadAllLines(inSivut);
+                lstrAlasivut.AddRange(asSivut.ToList());
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool TallennaTiedot(string inSivut)
+        {
+            File.WriteAllLines(inSivut, lstrAlasivut.ToArray());
+            return true;
+        }
         protected bool ListastaÄäkösetPois()
         {
             if (lstrAlasivut.Count == 0) return false;
@@ -66,7 +93,7 @@ namespace VahtiApp
             return true;
 
         }
-        public void EtusivuWebClient()
+        public bool EtusivuWebClient()
 
         {
             strEtusivu = string.Empty;
@@ -77,8 +104,9 @@ namespace VahtiApp
             string content = client.DownloadString(uri.ToString());
 
             strEtusivu = content;
+            return true;
         }
-        public void EtusivuWebClientDLS()
+        public bool EtusivuWebClientDLS()
         {
             strEtusivu = string.Empty;
             var client = new WebClient();
@@ -92,15 +120,17 @@ namespace VahtiApp
             client.DownloadStringAsync(uri);
 
             //Console.ReadLine();
+            return true;
         }
 
-        public void EtusivuRestRequest()
+        public bool EtusivuRestRequest()
         {
             strEtusivu = string.Empty;
             var client = new RestClient(uri);
             var request = new RestRequest("", Method.GET);
 
             client.ExecuteAsync(request, response => { strEtusivu = response.Content; });
+            return true;
 
             //Console.ReadLine();
         }

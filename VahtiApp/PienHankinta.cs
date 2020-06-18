@@ -5,6 +5,8 @@ using System.Web;
 using System.Linq;
 using System.Collections.Generic;
 using HtmlAgilityPack;
+using System.IO;
+using System.Diagnostics;
 
 namespace VahtiApp
 {
@@ -16,6 +18,7 @@ namespace VahtiApp
     /// </summary>
     internal class PienHankinta : Palvelut
     {
+        
         //List<List<string>> table;
         /// <summary>
         /// Set uribuilder & uri
@@ -27,6 +30,7 @@ namespace VahtiApp
             uriBuilder.Host = "pienhankintapalvelu.fi";
             uriBuilder.Path = "notfound/Default/Index";
             uri = uriBuilder.Uri;
+            strSivuTiedosto = "PHSivut.txt";
             //table = new List<List<string>>();
         }
         /// <summary>
@@ -83,6 +87,7 @@ namespace VahtiApp
         ///     MORE:  City,offertime,last question day
         /// </summary>
         /// <returns></returns>
+        /// 
         internal override bool PuraTarjousSivut()
         {
             string strEtiEka = "Voimassa olevat tarjouspyyn";
@@ -120,7 +125,7 @@ namespace VahtiApp
             strEtusivu = strEtusivu.Remove(iOnPaikalla + "</table>".Length);
             List<List<string>> table = new List<List<string>>();
             String strKunta = string.Empty;
-            char[] charsToTrim = { '{', ' ', '}','\n','\r' };
+            char[] charsToTrim = { '{', ' ', '}', '\n', '\r' };
             while (true)
             {
                 iOnPaikalla = strEtusivu.IndexOf("</table>");
@@ -134,11 +139,11 @@ namespace VahtiApp
                     else
                     {
                         //make new lines from table.
-                        foreach(List<string> tyot in table)
+                        foreach (List<string> tyot in table)
                         {
                             if (tyot[0].Contains("KN"))
                             {
-                                strKunta = tyot[0].Remove(0, tyot[0].IndexOf("=")+1).Replace("&#228;", "ä").Replace("&nbsp;", " ").Trim(charsToTrim);
+                                strKunta = tyot[0].Remove(0, tyot[0].IndexOf("=") + 1).Replace("&#228;", "ä").Replace("&nbsp;", " ").Trim(charsToTrim);
                             }
                             else
                             {
@@ -236,7 +241,7 @@ namespace VahtiApp
             {
                 var orderedCellTexts = firstTable.Descendants("tr")
                     .Select(row => row.SelectNodes("th|td").Take(1).ToArray())
-                    .Select(cellArr => new { KN=cellArr[0].InnerText })
+                    .Select(cellArr => new { KN = cellArr[0].InnerText })
                     .ToList();
                 foreach (var Cell in orderedCellTexts)
                     lstRetVal.Add(Cell.ToString());
@@ -259,5 +264,6 @@ namespace VahtiApp
 
             return lstRetVal;
         }
+        internal override string Tallenne() {return strSivuTiedosto; }
     }
 }
