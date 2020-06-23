@@ -33,6 +33,7 @@ namespace VahtiApp
             strSivuTiedosto = "PHSivut.txt";
             //table = new List<List<string>>();
         }
+
         /// <summary>
         /// There is several province in main page, and
         /// this collects all province pages their offers lists.
@@ -44,7 +45,7 @@ namespace VahtiApp
             bool bOk = ListastaÄäkösetPois();
             foreach (string strIterSivu in lstrAlasivut)
             {
-                Console.WriteLine($"Käsitellään maakuntaa {strIterSivu}");
+                Trace.WriteLine($"Käsitellään maakuntaa {strIterSivu}");
                 uriBuilder.Path = strIterSivu + "/HankintaYksikonPienHankinnat/PienHankintaLista";
                 uri = uriBuilder.Uri;
                 bOk = GetWebPage();
@@ -96,13 +97,13 @@ namespace VahtiApp
             int iOnPaikalla = strEtusivu.IndexOf(strEiPyyntöjä);
             if (-1 < iOnPaikalla)
             {
-                Console.WriteLine($"Ei voimassa olevia pienhankintoja");
+                Trace.WriteLine($"Ei voimassa olevia pienhankintoja");
                 return true; //It's a leagal state
             }
             iOnPaikalla = strEtusivu.IndexOf(strEtiEka);
             if (-1 == iOnPaikalla)
             {
-                Console.WriteLine($"Virhe {strEtiEka}");
+                Trace.WriteLine($"Virhe {strEtiEka}");
                 return false;
             }
             //
@@ -111,7 +112,7 @@ namespace VahtiApp
             iOnPaikalla = strEtusivu.IndexOf("<table");
             if (-1 == iOnPaikalla)
             {
-                Console.WriteLine($"Virhe <table");
+                Trace.WriteLine($"Virhe <table");
                 return false;
             }
             strEtusivu = strEtusivu.Remove(0, iOnPaikalla);
@@ -119,7 +120,7 @@ namespace VahtiApp
             iOnPaikalla = strEtusivu.LastIndexOf("</table>");
             if (-1 == iOnPaikalla)
             {
-                Console.WriteLine($"Virhe </table>");
+                Trace.WriteLine($"Virhe </table>");
                 return false;
             }
             strEtusivu = strEtusivu.Remove(iOnPaikalla + "</table>".Length);
@@ -133,7 +134,7 @@ namespace VahtiApp
                 {   //No more table ends
                     if (!bOk)
                     {
-                        Console.WriteLine($"Virhe </table>");
+                        Trace.WriteLine($"Virhe </table>");
                         return false;
                     }
                     else

@@ -9,12 +9,13 @@ namespace VahtiApp
 {
     class Program
     {
+        
         [STAThread]
         static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmVahti());
+            Application.Run(new Frm_Vahti_Main());
 
         }
     }

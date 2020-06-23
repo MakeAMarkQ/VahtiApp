@@ -36,7 +36,7 @@ namespace VahtiApp
         public bool GetWebPage()
         {
             strEtusivu = string.Empty;
-            Console.WriteLine(uri);
+            Trace.WriteLine(uri);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
 
             var response = (HttpWebResponse)request.GetResponse();
@@ -51,7 +51,9 @@ namespace VahtiApp
         internal int sivuja() { return lstrAlasivut.Count; }
         internal virtual bool PuraEtusivu() { Trace.WriteLine("Virtual-PuraEtusivu"); return false; }
         internal virtual bool PuraAlaSivut() { Trace.WriteLine("Virtual-PuraAlaSivut"); return false; }
+        internal virtual bool PuraAlaSivut(string strTmp) { Trace.WriteLine("Virtual-PuraAlaSivut"); return false; }
         internal virtual bool PuraTarjousSivut() { Trace.WriteLine("Virtual-PuraTarjousSivut"); return false; }
+        internal virtual bool PuraTarjousSivut(string strTmp) { Trace.WriteLine("Virtual-PuraTarjousSivut"); return false; }
         internal virtual string Tallenne() { Trace.WriteLine("Virtual-PuraTarjousSivut"); return "N/A"; }
         /// <summary>
         /// 
@@ -98,7 +100,7 @@ namespace VahtiApp
         {
             strEtusivu = string.Empty;
             var client = new WebClient();
-            client.Headers.Add("User-Agent", "C# console program");
+            client.Headers.Add("User-Agent", "C# Trace program");
 
 
             string content = client.DownloadString(uri.ToString());
@@ -119,7 +121,7 @@ namespace VahtiApp
 
             client.DownloadStringAsync(uri);
 
-            //Console.ReadLine();
+            //Trace.ReadLine();
             return true;
         }
 
@@ -132,7 +134,7 @@ namespace VahtiApp
             client.ExecuteAsync(request, response => { strEtusivu = response.Content; });
             return true;
 
-            //Console.ReadLine();
+            //Trace.ReadLine();
         }
         internal virtual List<string> HtmlToList(string strHtml)
         {

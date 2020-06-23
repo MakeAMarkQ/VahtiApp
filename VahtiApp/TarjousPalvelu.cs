@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -30,45 +31,31 @@ namespace VahtiApp
         /// g= 8 hex - 4hex - 4hex - 4hex - 12hex
         /// </summary>
         /// <returns></returns>
-        internal override bool PuraAlaSivut()
+        internal bool SuodataLista()
         {
             if (lstrAlasivut.Count == 0) return false;
             lstrAlasivut.Add("279");//Hankisivu not in frontpage
-            bool bOk = ListastaÄäkösetPois();
-            foreach (string strIterSivu in lstrAlasivut)
-            {
-                Console.WriteLine($"Käsitellään maakuntaa {strIterSivu}");
-                uriBuilder.Path = $"/tarjouspyynnot.aspx?p={strIterSivu}&g=4255edad-e038-4620-ba0d-6c62a78a5cb8";
-                uri = uriBuilder.Uri;
-                bOk = false;
-                /* Not work to javascript pages
-                bOk = GetWebPage();
-                bOk = EtusivuWebClient();
-                bOk = EtusivuWebClientDLS();
-                bOk = EtusivuRestRequest();
-                */
-                //WebBrowser WbBrowsr = new WebBrowser();
-                //WbBrowsr.Navigate(uri);
-                //WbBrowsr.Navigated
-                //strEtusivu=WbBrowsr.Document.Body.InnerHtml;
-                if (!bOk)
-                {
-                    Console.WriteLine("GetWebPage false;");
-                    return false;
-                }
-                bOk = PuraTarjousSivut();
-                if (!bOk)
-                {
-                    Console.WriteLine("PuraTarjousSivut false;");
-                    return false;
-                }
+            return ListastaÄäkösetPois();
 
 
-            }
-            return true;
 
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public List<Uri> TeeUriLista()
+        {
+            List<Uri> lstUrit = new List<Uri>();
+            foreach (string strIterSivu in lstrAlasivut)
+            {
+                Trace.WriteLine($"Käsitellään maakuntaa {strIterSivu}");
+                uriBuilder.Path = $"/tarjouspyynnot.aspx?p={strIterSivu}&g=4255edad-e038-4620-ba0d-6c62a78a5cb8";
+                uri = uriBuilder.Uri;
+                lstUrit.Add(uri);
+            }
+            return lstUrit;
+        }
         ///<table border="0" cellpadding="5" cellspacing="10" width="100%" style="font-family:Verdana;font-size:11pt;">
         ///<tr><td style = "border:1px dotted black;text-align:center;width:33%;" >
         ///        < a href="https://tarjouspalvelu.fi/2m" target="_self">
@@ -110,7 +97,7 @@ namespace VahtiApp
         /// <returns></returns>
         internal override List<string> HtmlToList(string strHtml)
         {
-            char[] charsToTrim = { '{', ' ', '}', '\n', '\r','\"' };
+            char[] charsToTrim = { '{', ' ', '}', '\n', '\r', '\"' };
             List<string> lstRetVal = new List<string>();
 
             var doc = new HtmlAgilityPack.HtmlDocument();
@@ -121,7 +108,8 @@ namespace VahtiApp
             {
                 var orderedCellTexts = firstTable.Descendants("tr")
                     .Select(row => row.SelectNodes("th|td").Take(3).ToArray())
-                    .Select(cellArr => new { 
+                    .Select(cellArr => new
+                    {
                         AD = cellArr[0].InnerHtml.Replace(',', ' ').Replace("&#228;", "ä").Replace("&#246;", "ö").Replace("&#196;", "Ä"),
                         BD = cellArr[1].InnerHtml.Replace(',', ' ').Replace("&#228;", "ä").Replace("&#246;", "ö").Replace("&#196;", "Ä"),
                         CD = cellArr[2].InnerHtml.Replace(',', ' ').Replace("&#228;", "ä").Replace("&#246;", "ö").Replace("&#196;", "Ä")
@@ -129,9 +117,9 @@ namespace VahtiApp
                     .ToList();
                 foreach (var Cell in orderedCellTexts)
                 {
-                    
-                    string[] strPalat= Cell.ToString().Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
-                    foreach(string strVal in strPalat)
+
+                    string[] strPalat = Cell.ToString().Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string strVal in strPalat)
                     {
                         if (-1 != strVal.IndexOf("Image/"))
                         {
@@ -169,43 +157,56 @@ namespace VahtiApp
         ///   ...
         ///   </table> 
         ///   Remove all before Siirry hakuun >> text. Next remofe text before first </table>. 
-        /// 1. No offers => 
-        ///   No table any more.
-        /// 2. Offerlists=>
-        ///     <table id="DPSIlmoituslista"
-        ///     <table id="ctl00_PageContent_GridView1"
-        ///     <table> NO id
-        ///     columns 5 or 6 
-        ///     <th class="bold sortable-cell sorting" style="width: 11%; color: white; cursor: pointer;" rowspan="1" colspan="1">Yksikkö</th>
-        ///     </tbody>    </table>
-        ///     If Yksikkö in table six columns, ofter cases five.
+        /// 1. div divFoorte contains company 
         /// </summary>
         /// <returns></returns>
-        internal override bool PuraTarjousSivut()
+        internal override bool PuraAlaSivut(string strEtusivu)
         {
-            string strEtiEka = "Siirry hakuun >>";
-            
+            string strEtiEka = "divFooter";
+            string strEti1ka = "KelpuuttamisJarjestelmaDivi";
+            string strEti2ka = "ctl00_PageContent_DPSListaPanel";// "DPSIlmoituslista_wrapper";
+            string strEti3ka = "ctl00_PageContent_GridView1_wrapper";
+
             bool bOk = false;
-            int iOnPaikalla = strEtusivu.IndexOf(strEtiEka);
+            int iOnPaikalla = strEtusivu.LastIndexOf(strEtiEka);
             if (-1 == iOnPaikalla)
             {
-                Console.WriteLine($"Virhe {strEtiEka}");
+                Trace.WriteLine($"Virhe {strEtiEka}");
                 return false;
             }
+            //long lLen = strEtusivu.LongCount();
             //
-            strEtusivu = strEtusivu.Remove(0, iOnPaikalla);
-            iOnPaikalla = strEtusivu.LastIndexOf("</table>");
-            if (-1 == iOnPaikalla)
+            strEtusivu = strEtusivu.Remove(iOnPaikalla);
+            int[] iPaikalla = new int[3];
+            iPaikalla[0] = strEtusivu.IndexOf(strEti1ka);
+            if (-1 == iPaikalla[0])
             {
-                Console.WriteLine($"Virhe </table>");
-                return false;
+                Trace.WriteLine($"Ei ole {strEti1ka}");
+                //return false;
             }
-            strEtusivu = strEtusivu.Remove(iOnPaikalla + "</table>".Length);
+            iPaikalla[1] = strEtusivu.IndexOf(strEti2ka);
+            if (-1 == iPaikalla[1])
+            {
+                Trace.WriteLine($"Ei ole {strEti2ka}");
+                //return false;
+            }
+            iPaikalla[2] = strEtusivu.IndexOf(strEti3ka);
+            if (-1 == iPaikalla[2])
+            {
+                Trace.WriteLine($"Ei ole {strEti3ka}");
+                //return false;
+            }
+            if (-1 == iPaikalla[0] && -1 == iPaikalla[1] && -1 == iPaikalla[2])
+                return false;
+            //We don't know the order
+            Array.Sort(iPaikalla);
+
+            strEtusivu = strEtusivu.Remove(iOnPaikalla);
             //first <table> ->
             iOnPaikalla = strEtusivu.IndexOf("<table");
             if (-1 == iOnPaikalla)
             {
-                Console.WriteLine($"Virhe <table");
+                Trace.WriteLine($"Virhe <table");
                 return false;
             }
             strEtusivu = strEtusivu.Remove(0, iOnPaikalla);
@@ -213,10 +214,13 @@ namespace VahtiApp
             iOnPaikalla = strEtusivu.LastIndexOf("</table>");
             if (-1 == iOnPaikalla)
             {
-                Console.WriteLine($"Virhe </table>");
+                Trace.WriteLine($"Virhe </table>");
                 return false;
             }
-            strEtusivu = strEtusivu.Remove(iOnPaikalla + "</table>".Length);
+            int iPit = iOnPaikalla + "</table>".Length;
+            Trace.WriteLine($"Pituus = {strEtusivu.Length}, paikka={iOnPaikalla}");
+            if(strEtusivu.Length> iPit)
+                strEtusivu = strEtusivu.Remove(iPit);
             List<List<string>> table = new List<List<string>>();
             String strKunta = string.Empty;
             char[] charsToTrim = { '{', ' ', '}', '\n', '\r' };
@@ -227,7 +231,7 @@ namespace VahtiApp
                 {   //No more table ends
                     if (!bOk)
                     {
-                        Console.WriteLine($"Virhe </table>");
+                        Trace.WriteLine($"Virhe </table>");
                         return false;
                     }
                     else
