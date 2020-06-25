@@ -38,7 +38,7 @@ namespace VahtiApp
             this.Btn_Load = new System.Windows.Forms.Button();
             this.btn_tarjouksia = new System.Windows.Forms.Button();
             this.lbl_Tarjouksia = new System.Windows.Forms.Label();
-            this.WB_Main = new System.Windows.Forms.WebBrowser();
+            
             this.SuspendLayout();
             // 
             // Btn_PienHankinta
@@ -116,22 +116,15 @@ namespace VahtiApp
             this.lbl_Tarjouksia.Size = new System.Drawing.Size(13, 13);
             this.lbl_Tarjouksia.TabIndex = 7;
             this.lbl_Tarjouksia.Text = "0";
-            // 
-            // WB_Main
-            // 
-            this.WB_Main.Location = new System.Drawing.Point(577, 233);
-            this.WB_Main.MinimumSize = new System.Drawing.Size(20, 20);
-            this.WB_Main.Name = "WB_Main";
-            this.WB_Main.Size = new System.Drawing.Size(222, 219);
-            this.WB_Main.TabIndex = 8;
-            this.WB_Main.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.WB_Main_DocumentCompleted);
+           
+            
             // 
             // Frm_Vahti_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.WB_Main);
+            
             this.Controls.Add(this.lbl_Tarjouksia);
             this.Controls.Add(this.btn_tarjouksia);
             this.Controls.Add(this.Btn_Load);
@@ -159,7 +152,7 @@ namespace VahtiApp
         private System.Windows.Forms.Label lbl_Tarjouksia;
         private PienHankinta clPienHankinta;
         private TarjousPalvelu clTarjouspalvelu;
-        private System.Windows.Forms.WebBrowser WB_Main;
+        private System.Collections.Generic.List<System.Windows.Forms.WebBrowser> lstBrowsers;
 
     }
 }

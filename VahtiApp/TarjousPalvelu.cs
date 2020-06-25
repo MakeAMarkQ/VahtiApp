@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace VahtiApp
 {
@@ -34,7 +33,7 @@ namespace VahtiApp
         internal bool SuodataLista()
         {
             if (lstrAlasivut.Count == 0) return false;
-            lstrAlasivut.Add("279");//Hankisivu not in frontpage
+            lstrAlasivut.Add("hanki,279");//Hankisivu not in frontpage
             return ListastaÄäkösetPois();
 
 
@@ -44,15 +43,20 @@ namespace VahtiApp
         /// 
         /// </summary>
         /// <returns></returns>
-        public List<Uri> TeeUriLista()
+        public List<UriBuilder> TeeUriLista()
         {
-            List<Uri> lstUrit = new List<Uri>();
+            List<UriBuilder> lstUrit = new List<UriBuilder>();
+            lstrAlasivut.Sort();
             foreach (string strIterSivu in lstrAlasivut)
             {
-                Trace.WriteLine($"Käsitellään maakuntaa {strIterSivu}");
-                uriBuilder.Path = $"/tarjouspyynnot.aspx?p={strIterSivu}&g=4255edad-e038-4620-ba0d-6c62a78a5cb8";
-                uri = uriBuilder.Uri;
-                lstUrit.Add(uri);
+                UriBuilder uri2Builder = new UriBuilder(uri);
+                string[] strPalat = strIterSivu.Split(new char[] { ',' });
+                Trace.WriteLine($"Käsitellään Sivua {strPalat[0]}");
+                uri2Builder.Path = $"/tarjouspyynnot.aspx?p={strPalat[1]}&g=4255edad-e038-4620-ba0d-6c62a78a5cb8";
+                uri2Builder.UserName = strPalat[0];
+                //uri = uriBuilder.Uri;
+                //lstUrit.Add(uri);
+                lstUrit.Add(uri2Builder);
             }
             return lstUrit;
         }
@@ -123,8 +127,11 @@ namespace VahtiApp
                     {
                         if (-1 != strVal.IndexOf("Image/"))
                         {
-                            string strTmp = strVal.Remove(strVal.IndexOf("alt=")).Remove(0, strVal.IndexOf("Image/")).Replace("Image/", " ").Trim(charsToTrim);
-                            lstRetVal.Add(strTmp);
+                            //<img src="/Default/Image/1632" alt="" border="0" />
+                            string strId = strVal.Remove(strVal.IndexOf("alt=")).Remove(0, strVal.IndexOf("Image/")).Replace("Image/", " ").Trim(charsToTrim);
+                            //<a href="https://tarjouspalvelu.fi/2m" target="_self">
+                            string strNimi= strVal.Remove(strVal.IndexOf("target=")).Remove(0, strVal.IndexOf("tarjouspalvelu.fi/")).Replace("tarjouspalvelu.fi/", " ").Trim(charsToTrim);
+                            lstRetVal.Add(strNimi + ","+ strId);
                         }
                     }
 
@@ -166,6 +173,7 @@ namespace VahtiApp
             string strEti1ka = "KelpuuttamisJarjestelmaDivi";
             string strEti2ka = "ctl00_PageContent_DPSListaPanel";// "DPSIlmoituslista_wrapper";
             string strEti3ka = "ctl00_PageContent_GridView1_wrapper";
+            string strEti4ka = "ctl00_PageContent_MuutIlmOts"; 
 
             bool bOk = false;
             int iOnPaikalla = strEtusivu.LastIndexOf(strEtiEka);
@@ -177,100 +185,100 @@ namespace VahtiApp
             //long lLen = strEtusivu.LongCount();
             //
             strEtusivu = strEtusivu.Remove(iOnPaikalla);
-            int[] iPaikalla = new int[3];
-            iPaikalla[0] = strEtusivu.IndexOf(strEti1ka);
-            if (-1 == iPaikalla[0])
-            {
-                Trace.WriteLine($"Ei ole {strEti1ka}");
-                //return false;
-            }
-            iPaikalla[1] = strEtusivu.IndexOf(strEti2ka);
-            if (-1 == iPaikalla[1])
-            {
-                Trace.WriteLine($"Ei ole {strEti2ka}");
-                //return false;
-            }
-            iPaikalla[2] = strEtusivu.IndexOf(strEti3ka);
-            if (-1 == iPaikalla[2])
-            {
-                Trace.WriteLine($"Ei ole {strEti3ka}");
-                //return false;
-            }
-            if (-1 == iPaikalla[0] && -1 == iPaikalla[1] && -1 == iPaikalla[2])
-                return false;
-            //We don't know the order
-            Array.Sort(iPaikalla);
+            List<int> iPaikalla = new List<int>();
+            iPaikalla.Add(strEtusivu.IndexOf(strEti1ka));
+            iPaikalla.Add(strEtusivu.IndexOf(strEti2ka));
+            iPaikalla.Add(strEtusivu.IndexOf(strEti3ka));
 
-            strEtusivu = strEtusivu.Remove(iOnPaikalla);
-            //first <table> ->
-            iOnPaikalla = strEtusivu.IndexOf("<table");
-            if (-1 == iOnPaikalla)
+            if (-1 == iPaikalla[0] && -1 == iPaikalla[1] && -1 == iPaikalla[2])
             {
-                Trace.WriteLine($"Virhe <table");
-                return false;
+                Trace.WriteLine($"Ei Tarjouspyyntöjä");
+                return true;
             }
-            strEtusivu = strEtusivu.Remove(0, iOnPaikalla);
-            //last </table> next
-            iOnPaikalla = strEtusivu.LastIndexOf("</table>");
-            if (-1 == iOnPaikalla)
+            //We don't know the order
+            iPaikalla.Sort();
+            List<string> strPala = new List<string>(){ "N/A","N/A","N/A"};
+            if(iPaikalla[2]>-1)
             {
-                Trace.WriteLine($"Virhe </table>");
-                return false;
+                strPala[0] = strEtusivu.Remove(0, iPaikalla[2]);
+                strEtusivu=strEtusivu.Remove(iPaikalla[2]);
+                int iMuutOts = strPala[0].LastIndexOf(strEti4ka);
+                if (-1 != iMuutOts)
+                {
+                    strPala[0] = strPala[0].Remove(iMuutOts);
+                }
             }
-            int iPit = iOnPaikalla + "</table>".Length;
-            Trace.WriteLine($"Pituus = {strEtusivu.Length}, paikka={iOnPaikalla}");
-            if(strEtusivu.Length> iPit)
-                strEtusivu = strEtusivu.Remove(iPit);
-            List<List<string>> table = new List<List<string>>();
+            if (iPaikalla[1] > -1)
+            {
+                strPala[1] = strEtusivu.Remove(0, iPaikalla[1]);
+                strEtusivu = strEtusivu.Remove(iPaikalla[1]);
+                int iMuutOts = strPala[1].LastIndexOf(strEti4ka);
+                if (-1 != iMuutOts)
+                {
+                    strPala[1] = strPala[1].Remove(iMuutOts);
+                }
+            }
+            if (iPaikalla[0] > -1)
+            {
+                strPala[2] = strEtusivu.Remove(0, iPaikalla[0]);
+                int iMuutOts = strPala[2].LastIndexOf(strEti4ka);
+                if (-1 != iMuutOts)
+                {
+                    strPala[2] = strPala[2].Remove(iMuutOts);
+                }
+                
+            }
+           
             String strKunta = string.Empty;
             char[] charsToTrim = { '{', ' ', '}', '\n', '\r' };
-            while (true)
-            {
-                iOnPaikalla = strEtusivu.IndexOf("</table>");
-                if (-1 == iOnPaikalla)
-                {   //No more table ends
-                    if (!bOk)
-                    {
-                        Trace.WriteLine($"Virhe </table>");
-                        return false;
-                    }
-                    else
-                    {
-                        //make new lines from table.
-                        foreach (List<string> tyot in table)
-                        {
-                            if (tyot[0].Contains("KN"))
-                            {
-                                strKunta = tyot[0].Remove(0, tyot[0].IndexOf("=") + 1).Replace("&#228;", "ä").Replace("&nbsp;", " ").Trim(charsToTrim);
-                            }
-                            else
-                            {
-                                tyot.RemoveAt(0);
-                                foreach (string strOsa in tyot)
-                                {
-                                    //tyot[0].Trim(charsToTrim);
+            return true;
+            //while (true)
+            //{
+            //    iOnPaikalla = strEtusivu.IndexOf("</table>");
+            //    if (-1 == iOnPaikalla)
+            //    {   //No more table ends
+            //        if (!bOk)
+            //        {
+            //            Trace.WriteLine($"Virhe </table>");
+            //            return false;
+            //        }
+            //        else
+            //        {
+            //            //make new lines from table.
+            //            foreach (List<string> tyot in table)
+            //            {
+            //                if (tyot[0].Contains("KN"))
+            //                {
+            //                    strKunta = tyot[0].Remove(0, tyot[0].IndexOf("=") + 1).Replace("&#228;", "ä").Replace("&nbsp;", " ").Trim(charsToTrim);
+            //                }
+            //                else
+            //                {
+            //                    tyot.RemoveAt(0);
+            //                    foreach (string strOsa in tyot)
+            //                    {
+            //                        //tyot[0].Trim(charsToTrim);
 
-                                    string[] palat = strOsa.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
-                                    Tarjous clTarjous = new Tarjous(strKunta);
-                                    clTarjous.strAlkuperainenLinkki = palat[0].Remove(0, palat[0].LastIndexOf("=\"") + 3).Trim(charsToTrim);
-                                    clTarjous.strAlkuperainenLinkki = clTarjous.strAlkuperainenLinkki.Remove(clTarjous.strAlkuperainenLinkki.IndexOf("\">") + 1);
-                                    clTarjous.strTunnus = palat[0].Remove(0, palat[0].IndexOf(">") + 1).Replace("&nbsp;", " ").Replace("</a>", " ").Trim(charsToTrim);
-                                    clTarjous.strPyynto = palat[1].Remove(0, palat[1].IndexOf("=") + 1).Replace("&nbsp;", " ").Trim(charsToTrim);
-                                    clTarjous.strKuvaus = palat[2].Remove(0, palat[2].IndexOf("=") + 1).Replace("&nbsp;", " ").Trim(charsToTrim);
-                                    clTarjous.strAika = palat[3].Remove(0, palat[3].IndexOf("=") + 1).Replace("&nbsp;", " ").Trim(charsToTrim);
-                                    //Must check if current offer is already in list
-                                    lstTajoukset.Add(clTarjous);
-                                }
-                            }
-                        }
-                        return true;
-                    }
-                }
-                string apuSivu = strEtusivu.Substring(0, iOnPaikalla + "</table>".Length);
-                strEtusivu = strEtusivu.Remove(0, iOnPaikalla + "</table>".Length);
-                table.Add(HtmlToList(apuSivu));
-                bOk = true;
-            }
+            //                        string[] palat = strOsa.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+            //                        Tarjous clTarjous = new Tarjous(strKunta);
+            //                        clTarjous.strAlkuperainenLinkki = palat[0].Remove(0, palat[0].LastIndexOf("=\"") + 3).Trim(charsToTrim);
+            //                        clTarjous.strAlkuperainenLinkki = clTarjous.strAlkuperainenLinkki.Remove(clTarjous.strAlkuperainenLinkki.IndexOf("\">") + 1);
+            //                        clTarjous.strTunnus = palat[0].Remove(0, palat[0].IndexOf(">") + 1).Replace("&nbsp;", " ").Replace("</a>", " ").Trim(charsToTrim);
+            //                        clTarjous.strPyynto = palat[1].Remove(0, palat[1].IndexOf("=") + 1).Replace("&nbsp;", " ").Trim(charsToTrim);
+            //                        clTarjous.strKuvaus = palat[2].Remove(0, palat[2].IndexOf("=") + 1).Replace("&nbsp;", " ").Trim(charsToTrim);
+            //                        clTarjous.strAika = palat[3].Remove(0, palat[3].IndexOf("=") + 1).Replace("&nbsp;", " ").Trim(charsToTrim);
+            //                        //Must check if current offer is already in list
+            //                        lstTajoukset.Add(clTarjous);
+            //                    }
+            //                }
+            //            }
+            //            return true;
+            //        }
+            //    }
+            //    string apuSivu = strEtusivu.Substring(0, iOnPaikalla + "</table>".Length);
+            //    strEtusivu = strEtusivu.Remove(0, iOnPaikalla + "</table>".Length);
+            //    table.Add(HtmlToList(apuSivu));
+            //    bOk = true;
+            //}
             //return false; 
         }
         internal override string Tallenne() { return strSivuTiedosto; }

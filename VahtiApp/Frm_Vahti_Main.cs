@@ -13,16 +13,17 @@ namespace VahtiApp
 {
     public partial class Frm_Vahti_Main : Form
     {
-        
+
         //Hilma clHilma = new Hilma();
         
-        
+
         public Frm_Vahti_Main()
         {
             InitializeComponent();
             this.lstKaikkiTajoukset = new System.Collections.Generic.List<Tarjous>();
             clPienHankinta = new PienHankinta();
             clTarjouspalvelu = new TarjousPalvelu();
+            lstBrowsers = new List<WebBrowser>();
         }
 
         private void Btn_PienHankinta_Click(object sender, EventArgs e)
@@ -79,27 +80,61 @@ namespace VahtiApp
             Trace.WriteLine($"PuraEtusivu {bOk} sivuja {clTarjouspalvelu.sivuja()}");
 
             if (bOk) bOk = clTarjouspalvelu.SuodataLista();
-            List<Uri> lstTPUrit = clTarjouspalvelu.TeeUriLista();
+            List<UriBuilder> lstTPUrit = clTarjouspalvelu.TeeUriLista();
             int i = 0;
-            foreach (Uri strIterSivu in lstTPUrit)
+            foreach (UriBuilder strUBSivu in lstTPUrit)
             {
+                Uri strIterSivu = strUBSivu.Uri;
                 WebBrowser wb = new WebBrowser();
-                wb.Name = strIterSivu.ToString();
-                wb.DocumentCompleted += WB_Main_DocumentCompleted;
+                string strName = strIterSivu.ToString();
+                strName = strName.Remove(strName.IndexOf("&"));
+                strName = strName.Remove(0, strName.IndexOf("p="));
+                wb.Name = strUBSivu.UserName + "," + strName;
+                wb.DocumentCompleted += webBrowserDokumenttiTaydellinen;
                 wb.Navigate(strIterSivu);
-                i++;
-                if(i==2)
-                    break;
+                lstBrowsers.Add(wb);
+                
             }
 
         }
 
-        private void WB_Main_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+       
+        private void webBrowserDokumenttiTaydellinen(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            //here to handle wb.doc.innerri
-            WebBrowser snd=(WebBrowser)sender;
+            //check that the full document is finished
+            if (e.Url.AbsolutePath != (sender as WebBrowser).Url.AbsolutePath)
+                return;
+
+            //get our browser reference
+            WebBrowser browser = sender as WebBrowser;
+
+            WebBrowser snd = (WebBrowser)sender;
             string strSisalto = snd.DocumentText;
-            clTarjouspalvelu.PuraAlaSivut(strSisalto);
+            Trace.WriteLine($"Puretaan Sivua {snd.Name}");
+            if (clTarjouspalvelu.PuraAlaSivut(strSisalto))
+            {
+                //if divfooter missing , page is not ok
+                //detach the event handler from the browser
+                //note: necessary to stop endlessly setting strings and clicking buttons
+                browser.DocumentCompleted -= webBrowserDokumenttiTaydellinen;
+                //attach second DocumentCompleted event handler to destroy browser
+                webBrowserTuhoaKokonaisuus(sender, e);
+            }
+        }
+
+        private void webBrowserTuhoaKokonaisuus(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+            //check that the full document is finished
+            if (e.Url.AbsolutePath != (sender as WebBrowser).Url.AbsolutePath)
+                return;
+
+            //I just destroy the WebBrowser, but you might want to do something
+            //with the newly navigated page
+
+            WebBrowser browser = sender as WebBrowser;
+             Trace.WriteLine($"Poistetaan Sivua {browser.Name}, Jäljellä {lstBrowsers.Count()}");
+            browser.Dispose();
+            lstBrowsers.Remove(browser);
         }
     }
 }
