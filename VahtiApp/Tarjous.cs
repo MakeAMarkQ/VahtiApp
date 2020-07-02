@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace VahtiApp
 {
@@ -14,7 +15,8 @@ namespace VahtiApp
         public string strKuvaus { get; set; }
         public string strAika 
         { get { return dtAika.ToString("yyyyMMdd_HHmm"); }
-          set { dtAika = DateTime.ParseExact(value, "dd.MM.yyyy HH:mm", null); } 
+            //set { dtAika = DateTime.ParseExact(value, "dd.MM.yyyy HH:mm:ss", null); } 
+            set {dtAika = Convert.ToDateTime(value, new CultureInfo("fi-FI"));}
         }
         private DateTime dtAika;
         public bool bFiltered;
@@ -28,8 +30,12 @@ namespace VahtiApp
             strTarjousDirLinkki = "N/A";
             strPyynto = "N/A";
             strKuvaus = "N/A";
-            strAika = "31.12.9999 23:59";
+            strAika = "31.12.9999 23:59:00";
             bFiltered = false;
+        }
+        public void VaihdaYksikko(string inKunta)
+        {
+            this.strKunta = inKunta;
         }
         public override string ToString()
         {

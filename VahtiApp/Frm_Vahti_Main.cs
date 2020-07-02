@@ -80,25 +80,38 @@ namespace VahtiApp
             Trace.WriteLine($"PuraEtusivu {bOk} sivuja {clTarjouspalvelu.sivuja()}");
 
             if (bOk) bOk = clTarjouspalvelu.SuodataLista();
-            List<UriBuilder> lstTPUrit = clTarjouspalvelu.TeeUriLista();
+            List<Uri> lstTPUrit = clTarjouspalvelu.TeeUriLista();
             int i = 0;
-            foreach (UriBuilder strUBSivu in lstTPUrit)
+            char[] charsToTrim = { '{', ' ', '}', '\n', '\r', '\"' };
+            foreach (Uri strIterSivu in lstTPUrit)
             {
-                Uri strIterSivu = strUBSivu.Uri;
+                //Uri strIterSivu = strUBSivu.Uri;
                 WebBrowser wb = new WebBrowser();
-                string strName = strIterSivu.ToString();
-                strName = strName.Remove(strName.IndexOf("&"));
-                strName = strName.Remove(0, strName.IndexOf("p="));
-                wb.Name = strUBSivu.UserName + "," + strName;
-                wb.DocumentCompleted += webBrowserDokumenttiTaydellinen;
+                //string strVal = strIterSivu.ToString();
+                string strNimi = clTarjouspalvelu.HaeUriName(strIterSivu.ToString());
+                wb.Name = strNimi;
+
+
+                wb.Navigated += webBrowser_Navigated;
                 wb.Navigate(strIterSivu);
                 lstBrowsers.Add(wb);
-                
+                i++;
+                if (i == 2) break;
             }
 
         }
+        private void webBrowser_Navigated(object sender,    WebBrowserNavigatedEventArgs e)
+        {
+            if (e.Url.AbsolutePath != (sender as WebBrowser).Url.AbsolutePath)
+                return;
+            WebBrowser browser = sender as WebBrowser;
+            browser.Navigated -= webBrowser_Navigated;
+            browser.DocumentCompleted += webBrowserDokumenttiTaydellinen;
+            string strUri = browser.Url.ToString();
+            strUri = strUri.Replace("default.aspx", "tarjouspyynnot.aspx");
+            browser.Navigate(strUri);
+        }
 
-       
         private void webBrowserDokumenttiTaydellinen(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             //check that the full document is finished
@@ -111,7 +124,7 @@ namespace VahtiApp
             WebBrowser snd = (WebBrowser)sender;
             string strSisalto = snd.DocumentText;
             Trace.WriteLine($"Puretaan Sivua {snd.Name}");
-            if (clTarjouspalvelu.PuraAlaSivut(strSisalto))
+            if (clTarjouspalvelu.PuraAlaSivut(strSisalto, snd.Name))
             {
                 //if divfooter missing , page is not ok
                 //detach the event handler from the browser

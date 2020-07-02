@@ -51,7 +51,7 @@ namespace VahtiApp
         internal int sivuja() { return lstrAlasivut.Count; }
         internal virtual bool PuraEtusivu() { Trace.WriteLine("Virtual-PuraEtusivu"); return false; }
         internal virtual bool PuraAlaSivut() { Trace.WriteLine("Virtual-PuraAlaSivut"); return false; }
-        internal virtual bool PuraAlaSivut(string strTmp) { Trace.WriteLine("Virtual-PuraAlaSivut"); return false; }
+        internal virtual bool PuraAlaSivut(string strTmp, string strPK) { Trace.WriteLine("Virtual-PuraAlaSivut"); return false; }
         internal virtual bool PuraTarjousSivut() { Trace.WriteLine("Virtual-PuraTarjousSivut"); return false; }
         internal virtual bool PuraTarjousSivut(string strTmp) { Trace.WriteLine("Virtual-PuraTarjousSivut"); return false; }
         internal virtual string Tallenne() { Trace.WriteLine("Virtual-PuraTarjousSivut"); return "N/A"; }
