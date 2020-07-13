@@ -45,8 +45,9 @@ namespace VahtiApp
             bool bOk = ListastaÄäkösetPois();
             foreach (string strIterSivu in lstrAlasivut)
             {
+                //pienhankinta maakunnissa täytyy pistaa '-' merkit
                 Trace.WriteLine($"Käsitellään maakuntaa {strIterSivu}");
-                uriBuilder.Path = strIterSivu + "/HankintaYksikonPienHankinnat/PienHankintaLista";
+                uriBuilder.Path = strIterSivu.Replace("-","") + "/HankintaYksikonPienHankinnat/PienHankintaLista";
                 uri = uriBuilder.Uri;
                 bOk = GetWebPage();
                 if (!bOk) return false;
@@ -154,13 +155,13 @@ namespace VahtiApp
                                     //tyot[0].Trim(charsToTrim);
 
                                     string[] palat = strOsa.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
-                                    Tarjous clTarjous = new Tarjous(strKunta);
+                                    Tarjous clTarjous = new Tarjous(strKunta,"PienHankinta");
                                     clTarjous.strAlkuperainenLinkki = palat[0].Remove(0, palat[0].LastIndexOf("=\"") + 3).Trim(charsToTrim);
                                     clTarjous.strAlkuperainenLinkki = clTarjous.strAlkuperainenLinkki.Remove(clTarjous.strAlkuperainenLinkki.IndexOf("\">") + 1);
                                     clTarjous.strTunnus = palat[0].Remove(0, palat[0].IndexOf(">") + 1).Replace("&nbsp;", " ").Replace("</a>", " ").Trim(charsToTrim);
                                     clTarjous.strPyynto = palat[1].Remove(0, palat[1].IndexOf("=") + 1).Replace("&nbsp;", " ").Trim(charsToTrim);
                                     clTarjous.strKuvaus = palat[2].Remove(0, palat[2].IndexOf("=") + 1).Replace("&nbsp;", " ").Trim(charsToTrim);
-                                    clTarjous.strAika = palat[3].Remove(0, palat[3].IndexOf("=") + 1).Replace("&nbsp;", " ").Trim(charsToTrim);
+                                    clTarjous.strMaaraAika = palat[3].Remove(0, palat[3].IndexOf("=") + 1).Replace("&nbsp;", " ").Trim(charsToTrim);
                                     //Must check if current offer is already in list
                                     lstTajoukset.Add(clTarjous);
                                 }

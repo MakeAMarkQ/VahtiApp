@@ -86,7 +86,7 @@ namespace VahtiApp
             {
 
                 lstrAlasivut[iLoop] = lstrAlasivut[iLoop].ToLower()
-                                               .Replace("-", "")
+                                               //.Replace("-", "")
                                                .Replace("ä", "a")
                                                .Replace("ö", "o")
                                                .Replace("å", "a")

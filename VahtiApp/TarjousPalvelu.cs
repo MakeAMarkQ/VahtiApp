@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Policy;
 using System.Web.UI;
 
 namespace VahtiApp
@@ -35,7 +36,7 @@ namespace VahtiApp
         internal bool SuodataLista()
         {
             if (lstrAlasivut.Count == 0) return false;
-            lstrAlasivut.Add(strUriAlku +"hanki,279");//Hankisivu not in frontpage
+            //lstrAlasivut.Add("hanki,279");//Hankisivu not in frontpage
             return ListastaÄäkösetPois();
 
 
@@ -110,7 +111,12 @@ namespace VahtiApp
             }
             return "N/A";
         }
-
+        internal Uri HaeNameUri(string inName)
+        {
+            inName = inName.Remove(inName.LastIndexOf(","));
+            return new Uri(strUriAlku+ inName);
+ 
+        }
         /// <summary>
         /// Table to Html
         /// </summary>
@@ -133,12 +139,12 @@ namespace VahtiApp
                 .ToList();
             List<string> lstSarakeNimet = new List<string>();
             bool bOtsikot = false;
-            string strRivi = string.Empty;
+            
 
             foreach (var Rivi in lstTaulukonSolujenTekstit)
             {
                 int i = 0;
-
+                string strRivi = string.Empty;
                 foreach (var Solu in Rivi)
                 {
                     string strVal = Solu.InnerHtml.Replace(',', ' ').Replace("&#228;", "ä").Replace("&#246;", "ö").Replace("&#196;", "Ä");
@@ -148,6 +154,8 @@ namespace VahtiApp
                         //<img src="/Default/Image/1632" alt="" border="0" />
                         string strId = strVal.Remove(strVal.IndexOf("alt=")).Remove(0, strVal.IndexOf("Image/")).Replace("Image/", " ").Trim(charsToTrim);
                         //<a href="https://tarjouspalvelu.fi/2m" target="_self">
+                        //if (strId.Contains("1295"))
+                        //    i = i;
                         string strNimi = strVal.Remove(strVal.IndexOf("target=")).Remove(0, strVal.IndexOf("tarjouspalvelu.fi/")).Replace("tarjouspalvelu.fi/", " ").Trim(charsToTrim);
                         //string strNimi = strVal.Remove(strVal.IndexOf("target=")).Remove(0, strVal.IndexOf("href=")).Replace("href=", " ").Trim(charsToTrim);
                         Trace.WriteLine(strNimi + "," + strId);
@@ -263,7 +271,7 @@ namespace VahtiApp
             foreach (var strRivi in table)
             {
                 string[] asOsat = strRivi.Split(new string[] { "][" }, StringSplitOptions.RemoveEmptyEntries);
-                Tarjous clTarjous = new Tarjous(strKunta);
+                Tarjous clTarjous = new Tarjous(strKunta,"Tarjouspalvelu");
                 foreach (var strOsa in asOsat)
                 {
                     string[] asOppi = strOsa.Split(new string[] { ":=" }, StringSplitOptions.RemoveEmptyEntries);
@@ -295,9 +303,13 @@ namespace VahtiApp
                     }
                     if (asOppi.First().ToLower().Contains("määrä"))
                     {
-                        string strTemp = asOppi.Last().Remove(asOppi.Last().LastIndexOf("</"));
-                        strTemp = strTemp.Remove(0, strTemp.LastIndexOf(">") + 1);
-                        clTarjous.strAika = strTemp;
+                        string strTemp = asOppi.Last();
+                        if (strTemp.LastIndexOf("</") != -1)
+                        {
+                            strTemp = strTemp.Remove(strTemp.LastIndexOf("</"));
+                            strTemp = strTemp.Remove(0, strTemp.LastIndexOf(">") + 1);
+                        }
+                        clTarjous.strMaaraAika = strTemp;
                     }
 
                 }

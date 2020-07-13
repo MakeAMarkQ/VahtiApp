@@ -6,32 +6,67 @@ namespace VahtiApp
     internal class Tarjous : IComparable<Tarjous>
     {
         public const int LuokkaVersion = 20200610;
-        private string strKunta;
+        public string strKunta;
         public string strTunnus { get; set; }
         public string strAlkuperainenLinkki { get; set; }
         public string strTajousDocLinkki { get; set; }
         public string strTarjousDirLinkki { get; set; }
         public string strPyynto { get; set; }
         public string strKuvaus { get; set; }
-        public string strAika 
-        { get { return dtAika.ToString("yyyyMMdd_HHmm"); }
+        public string strMaaraAika
+        {
+            get { return dtMaaraAika.ToString("yyyyMMdd_HHmm"); }
             //set { dtAika = DateTime.ParseExact(value, "dd.MM.yyyy HH:mm:ss", null); } 
-            set {dtAika = Convert.ToDateTime(value, new CultureInfo("fi-FI"));}
+            set
+            {
+                if (value.Contains("."))
+                {
+                    if (!value.Contains("mää"))
+                        dtMaaraAika = Convert.ToDateTime(value, new CultureInfo("fi-FI"));
+                    else
+                        dtMaaraAika = new DateTime(3000, 12, 31, 23, 59, 59);
+                }
+            }
         }
-        private DateTime dtAika;
+
+        public string strDataBase { get; internal set; }
+        public string strJulkaistu
+        {
+            get { return dtJulkaistu.ToString("yyyyMMdd_HHmm"); }
+            //set { dtAika = DateTime.ParseExact(value, "dd.MM.yyyy HH:mm:ss", null); } 
+            set
+            {
+                if (value.Contains("."))
+                {
+                    if (!value.Contains("jul"))
+                        dtJulkaistu = Convert.ToDateTime(value, new CultureInfo("fi-FI"));
+                    else
+                        dtJulkaistu = DateTime.Now;
+                }
+
+            }
+        }
+
+        public string strIlmoitusTyyppi { get; internal set; }
+
+        private DateTime dtMaaraAika;
+        private DateTime dtJulkaistu;
         public bool bFiltered;
 
-        public Tarjous(string strKunta)
+        public Tarjous(string inKunta, string inTyyppi)
         {
-            this.strKunta = strKunta;
+            strKunta = inKunta;
             strTunnus = "N/A";
             strAlkuperainenLinkki = "N/A";
             strTajousDocLinkki = "N/A";
             strTarjousDirLinkki = "N/A";
             strPyynto = "N/A";
             strKuvaus = "N/A";
-            strAika = "31.12.9999 23:59:00";
+            strMaaraAika = "31.12.9999 23:59:00";
+            strJulkaistu = DateTime.Today.ToString();
+            strDataBase = "N/A";
             bFiltered = false;
+            strIlmoitusTyyppi = inTyyppi;
         }
         public void VaihdaYksikko(string inKunta)
         {
@@ -40,14 +75,14 @@ namespace VahtiApp
         public override string ToString()
         {
 
-            return  strAika + ":"+  strPyynto + " (" + strKunta+")";// + strTunnus +" = "+ strLinkki;
+            return strMaaraAika + ":" + strPyynto + " (" + strKunta + ")";// + strTunnus +" = "+ strLinkki;
         }
         public int CompareTo(Tarjous other)
         {
-            if(other == null) return -1;
-            if (this.dtAika < other.dtAika) return -1;
-            if ((this.dtAika == other.dtAika)
-                && (this.strPyynto.CompareTo(other.strPyynto)==1)) return -1;
+            if (other == null) return -1;
+            if (this.dtMaaraAika < other.dtMaaraAika) return -1;
+            if ((this.dtMaaraAika == other.dtMaaraAika)
+                && (this.strPyynto.CompareTo(other.strPyynto) == 1)) return -1;
             return 1;
         }
     }
