@@ -19,6 +19,11 @@ namespace VahtiApp
             //set { dtAika = DateTime.ParseExact(value, "dd.MM.yyyy HH:mm:ss", null); } 
             set
             {
+                if (value.Contains("_"))
+                {
+                    dtMaaraAika = DateTime.ParseExact(value, "yyyyMMdd_HHmm", new CultureInfo("fi-FI"));
+                }
+                else
                 if (value.Contains("."))
                 {
                     if (!value.Contains("mää"))
@@ -36,6 +41,11 @@ namespace VahtiApp
             //set { dtAika = DateTime.ParseExact(value, "dd.MM.yyyy HH:mm:ss", null); } 
             set
             {
+                if(value.Contains("_"))
+                {
+                    dtJulkaistu = DateTime.ParseExact(value, "yyyyMMdd_HHmm", new CultureInfo("fi-FI"));
+                }
+                else
                 if (value.Contains("."))
                 {
                     if (!value.Contains("jul"))
@@ -46,16 +56,17 @@ namespace VahtiApp
 
             }
         }
-
+        public string strFiltered { get { return bFiltered.ToString(); }
+            internal set { bFiltered=value.Equals("true"); } }
         public string strIlmoitusTyyppi { get; internal set; }
 
         private DateTime dtMaaraAika;
         private DateTime dtJulkaistu;
-        public bool bFiltered;
+        private bool bFiltered;
 
-        public Tarjous(string inKunta, string inTyyppi)
+        public Tarjous()
         {
-            strKunta = inKunta;
+            strKunta = "N/A";
             strTunnus = "N/A";
             strAlkuperainenLinkki = "N/A";
             strTajousDocLinkki = "N/A";
@@ -65,7 +76,15 @@ namespace VahtiApp
             strMaaraAika = "31.12.9999 23:59:00";
             strJulkaistu = DateTime.Today.ToString();
             strDataBase = "N/A";
-            bFiltered = false;
+            strFiltered = "false";
+            strIlmoitusTyyppi= "N/A";
+
+
+        }
+        public Tarjous(string inKunta, string inTyyppi):this()
+        {
+            
+            strKunta = inKunta;
             strIlmoitusTyyppi = inTyyppi;
         }
         public void VaihdaYksikko(string inKunta)

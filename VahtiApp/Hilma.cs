@@ -11,6 +11,7 @@ namespace VahtiApp
         //https://www.hankintailmoitukset.fi/fi/search?
         //top=75&nuts=FI1D&nuts=FI1C3&
         //pa=2020-06-02&of=datePublished&od=desc
+        private string strHilma= "https://www.hankintailmoitukset.fi";
         public Hilma()
         {
             uriBuilder = new UriBuilder();
@@ -59,15 +60,15 @@ namespace VahtiApp
                 foreach (var strOsa in asOsat)
                 {
                     string[] asOppi = strOsa.Split(new string[] { ":=" }, StringSplitOptions.RemoveEmptyEntries);
-                    if (asOppi.First().ToLower().Contains("DB"))
+                    if (asOppi.First().ToLower().Contains("db"))
                     {
                         string strTemp = asOppi.Last();
                         clTarjous.strDataBase = strTemp;
                     }
-                    if (asOppi.First().ToLower().Contains("Lnk"))
+                    if (asOppi.First().ToLower().Contains("lnk"))
                     {
                         string strTemp = asOppi.Last();
-                        clTarjous.strAlkuperainenLinkki = strTemp;
+                        clTarjous.strAlkuperainenLinkki = strHilma+strTemp;
                     }
                     if (asOppi.First().ToLower().Contains("nimi"))
                     {
@@ -154,6 +155,7 @@ namespace VahtiApp
                             string strLInkki = Solu.InnerHtml.ToString();
                             strLInkki = strLInkki.Remove(strLInkki.IndexOf(">") - 1);
                             strLInkki = strLInkki.Remove(0, strLInkki.IndexOf("=") + 1);
+                            strLInkki = strLInkki.Trim('\"');
                             strRivi += "[";
                             strRivi += lstSarakeNimet[iSoluNro].ToLower() + ":=" + strLInkki;//.Trim(charsToTrim);
                             strRivi += "]";

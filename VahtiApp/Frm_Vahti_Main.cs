@@ -4,10 +4,12 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace VahtiApp
@@ -21,7 +23,10 @@ namespace VahtiApp
         public bool bTarjouspalvelu = false;
         public int iIntervalinms = 1500;
         public string strFileName = "Tarjoukset.xml";
-        //public string strHankiurl = string.Empty;
+        public int iPage = 0;
+        public List<Uri> lstTPUrit;
+        private List<string> lstSuodata;
+        private readonly string strSuodatin="Suodatin.txt"; 
         //public string strAkliniurl = string.Empty;
         public Frm_Vahti_Main()
         {
@@ -31,6 +36,8 @@ namespace VahtiApp
             clTarjouspalvelu = new TarjousPalvelu();
             clHilma = new Hilma();
             lstBrowsers = new List<WebBrowser>();
+            lstTPUrit = new List<Uri>();
+            lstSuodata = new List<string>();
         }
 
         private void Btn_PienHankinta_Click(object sender, EventArgs e)
@@ -65,14 +72,16 @@ namespace VahtiApp
 
         private void Btn_Load_Click(object sender, EventArgs e)
         {
-            ///Lataa olemassaolevat kansiot
-            bool bOk = clPienHankinta.LataaTiedot(clPienHankinta.Tallenne());
-            Trace.WriteLine($"Pientarjoukset LataaTiedot {bOk}");
-            //RTbx_VahtiLog.AppendText(Environment.NewLine + $"Pientarjoukset LataaTiedot {bOk}");
+            if(File.Exists(strSuodatin))
+            {
+                lstSuodata = File.ReadAllLines(strSuodatin).ToList();
+            }
+            
         }
 
         private void btn_tarjouksia_Click(object sender, EventArgs e)
         {
+            // tänne myös hakujen filterointi
             if (CBx_Hilma.Checked == true && !bHilma)
             {
                 lstKaikkiTajoukset.AddRange(clHilma.lstTajoukset);
@@ -89,8 +98,10 @@ namespace VahtiApp
                 bTarjouspalvelu = true;
             }
             lbl_Tarjouksia.Text = lstKaikkiTajoukset.Count().ToString();
+            //Uusi ikkuna jossa näytetään tiedot
         }
-        public List<Uri> lstTPUrit;
+
+
         private void Btn_Tarjouspalvelu_Click(object sender, EventArgs e)
         {
             Trace.WriteLine("TarjousPalvelu");
@@ -185,7 +196,8 @@ namespace VahtiApp
             TB_Kerta.Text = "0";
             WBrHilma.Name = "Hilma";
             WBrHilma.DocumentCompleted += WBrHilma_DokumenttiTaydellinen;
-            WBrHilma.Navigate(@"https://www.hankintailmoitukset.fi/fi/search?top=1500&other=showActive&of=tendersOrRequestsToParticipateDueDateTime&od=asc");
+            //WBrHilma.Navigate(@"https://www.hankintailmoitukset.fi/fi/search?top=1500&other=showActive&of=tendersOrRequestsToParticipateDueDateTime&od=asc");
+            WBrHilma.Navigate(@"https://www.hankintailmoitukset.fi/fi/search?top=2000&pa=2000-07-05&other=showActive&of=datePublished&od=desc");
             //WBrHilma.Navigate(@"https://www.hankintailmoitukset.fi/fi/search?top=12&other=showActive&of=datePublished&od=desc");
 
         }
@@ -227,8 +239,55 @@ namespace VahtiApp
         private void Frm_Vahti_Main_Shown(object sender, EventArgs e)
         {
             Btn_Hilma_Click(sender, e);
+            if(File.Exists(strFileName))
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(strFileName);
+                XmlNodeList nodes = doc.DocumentElement.SelectNodes("/Tarjoukset/tarjous");
+                foreach (XmlNode node in nodes)
+                {
+                    Tarjous clTarjous = new Tarjous();
+
+                    clTarjous.strKunta = node.SelectSingleNode("Kunta").InnerText;
+                    clTarjous.strTunnus = node.SelectSingleNode("Tunnus").InnerText;
+                    clTarjous.strAlkuperainenLinkki = node.SelectSingleNode("AlkuperainenLinkki").InnerText;
+                    clTarjous.strTajousDocLinkki = node.SelectSingleNode("TajousDocLinkki").InnerText;
+                    clTarjous.strTarjousDirLinkki = node.SelectSingleNode("TarjousDirLinkki").InnerText;
+                    clTarjous.strPyynto = node.SelectSingleNode("Pyynto").InnerText;
+                    clTarjous.strKuvaus = node.SelectSingleNode("Kuvaus").InnerText;
+                    clTarjous.strMaaraAika = node.SelectSingleNode("MaaraAika").InnerText;
+                    clTarjous.strJulkaistu = node.SelectSingleNode("Julkaistu").InnerText;
+                    clTarjous.strDataBase = node.SelectSingleNode("DataBase").InnerText;
+                    clTarjous.strFiltered = node.SelectSingleNode("Filtered").InnerText;
+                    clTarjous.strIlmoitusTyyppi = node.SelectSingleNode("IlmoitusTyyppi").InnerText;
+                    lstKaikkiTajoukset.Add(clTarjous);
+                }
+                lbl_Tarjouksia.Text = lstKaikkiTajoukset.Count().ToString();
+
+            }
         }
-        public int iPage = 0;
+        private void Btn_JTarj_Click(object sender, EventArgs e)
+        {
+            if (lstKaikkiTajoukset.Count > 0)
+            {
+
+                var xml = new XElement("Tarjoukset", lstKaikkiTajoukset.Select(x => new XElement("tarjous",
+                                            new XElement("Kunta", x.strKunta),
+                                            new XElement("Tunnus", x.strTunnus),
+                                            new XElement("AlkuperainenLinkki", x.strAlkuperainenLinkki),
+                                            new XElement("TajousDocLinkki", x.strTajousDocLinkki),
+                                            new XElement("TarjousDirLinkki", x.strTarjousDirLinkki),
+                                            new XElement("Pyynto", x.strPyynto),
+                                            new XElement("Kuvaus", x.strKuvaus),
+                                            new XElement("MaaraAika", x.strMaaraAika),
+                                            new XElement("Julkaistu", x.strJulkaistu),
+                                            new XElement("DataBase", x.strDataBase),
+                                            new XElement("Filtered", x.strFiltered),
+                                            new XElement("IlmoitusTyyppi", x.strIlmoitusTyyppi)
+                                            )));
+                xml.Save(strFileName, SaveOptions.None);
+            }
+        }
         private void Tmr_Vahti_Tick(object sender, EventArgs e)
         {
             int iSivuja = lstTPUrit.Count;
@@ -259,37 +318,17 @@ namespace VahtiApp
             }
         }
 
-        private void Btn_JTarj_Click(object sender, EventArgs e)
+
+
+        private void Btn_Suodata_Click(object sender, EventArgs e)
         {
-            if (lstKaikkiTajoukset.Count > 0)
-            {
-                   var xml = new XElement("Tarjoukset", lstKaikkiTajoukset.Select(x => new XElement("tarjous",
-                                               new XAttribute("strKunta", x.strKunta),
-                                               new XAttribute("strTunnus", x.strTunnus),
-                                               new XAttribute("strAlkuperainenLinkki", x.strAlkuperainenLinkki),
-                                               new XAttribute("strTajousDocLinkki", x.strTajousDocLinkki),
-                                               new XAttribute("strTarjousDirLinkki", x.strTarjousDirLinkki),
-                                               new XAttribute("strPyynto", x.strPyynto),
-                                               new XAttribute("strKuvaus", x.strKuvaus),
-                                               new XAttribute("strMaaraAika", x.strMaaraAika),
-                                               new XAttribute("strJulkaistu", x.strJulkaistu),
-                                               new XAttribute("strDataBase", x.strDataBase),
-                                               new XAttribute("bFiltered", x.bFiltered),
-                                               new XAttribute("strIlmoitusTyyppi", x.strIlmoitusTyyppi)
-                                               )));
-                xml.Save(strFileName, SaveOptions.None);
-            }
-        }
-
-        private void Btn_Hanki_Click(object sender, EventArgs e)
-        {
-            Uri strIterSivu = new Uri("https://tarjouspalvelu.fi/hanki");
-            WebBrowser wb = new WebBrowser();
-            wb.Name = "hanki,279";
-
-
-            wb.Navigated += webBrowser_Navigated;
-            wb.Navigate(strIterSivu);
+            List<string> ela= new List<string>() { "Kissa", "Koira" };
+            List<Tarjous> b = lstKaikkiTajoukset.FindAll(x => x.strFiltered.Contains("fa"));
+            var c = from m in b
+                    where 
+                    (ela.Any(n => m.strPyynto.Contains(n)) || ela.Any(n => m.strKuvaus.Contains(n)))
+                    select m;
+            //var e = a.Intersect(b).Any();
         }
     }
 }

@@ -18,7 +18,7 @@ namespace VahtiApp
     /// </summary>
     internal class PienHankinta : Palvelut
     {
-        
+        public string strPPalvelu = "https://pienhankintapalvelu.fi";
         //List<List<string>> table;
         /// <summary>
         /// Set uribuilder & uri
@@ -156,8 +156,8 @@ namespace VahtiApp
 
                                     string[] palat = strOsa.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
                                     Tarjous clTarjous = new Tarjous(strKunta,"PienHankinta");
-                                    clTarjous.strAlkuperainenLinkki = palat[0].Remove(0, palat[0].LastIndexOf("=\"") + 3).Trim(charsToTrim);
-                                    clTarjous.strAlkuperainenLinkki = clTarjous.strAlkuperainenLinkki.Remove(clTarjous.strAlkuperainenLinkki.IndexOf("\">") + 1);
+                                    clTarjous.strAlkuperainenLinkki = palat[0].Remove(0, palat[0].LastIndexOf("=\"") + 2).Trim(charsToTrim);
+                                    clTarjous.strAlkuperainenLinkki = strPPalvelu+clTarjous.strAlkuperainenLinkki.Remove(clTarjous.strAlkuperainenLinkki.IndexOf("\">"));
                                     clTarjous.strTunnus = palat[0].Remove(0, palat[0].IndexOf(">") + 1).Replace("&nbsp;", " ").Replace("</a>", " ").Trim(charsToTrim);
                                     clTarjous.strPyynto = palat[1].Remove(0, palat[1].IndexOf("=") + 1).Replace("&nbsp;", " ").Trim(charsToTrim);
                                     clTarjous.strKuvaus = palat[2].Remove(0, palat[2].IndexOf("=") + 1).Replace("&nbsp;", " ").Trim(charsToTrim);

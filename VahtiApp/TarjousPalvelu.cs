@@ -36,7 +36,8 @@ namespace VahtiApp
         internal bool SuodataLista()
         {
             if (lstrAlasivut.Count == 0) return false;
-            //lstrAlasivut.Add("hanki,279");//Hankisivu not in frontpage
+            //lstrAlasivut.Clear();
+            lstrAlasivut.Add("hanki,279");//Hankisivu not in frontpage
             return ListastaÄäkösetPois();
 
 
@@ -286,19 +287,28 @@ namespace VahtiApp
                         string strTemp = asOppi.Last().Remove(asOppi.Last().LastIndexOf("</"));
                         strTemp = strTemp.Remove(0, strTemp.LastIndexOf(">") + 1);
                         clTarjous.strTunnus=strTemp;
-                        strTemp= asOppi.Last().Remove(0,asOppi.Last().IndexOf("=")+1);
-                        strTemp = strTemp.Remove(strTemp.IndexOf(">") - 1);
+                        strTemp = asOppi.Last().Remove(0, asOppi.Last().IndexOf("href=") + 6);
+                        strTemp = strTemp.Remove(strTemp.IndexOf(" ") - 1);
+                        strTemp = strTemp.TrimStart('/');
+                        strTemp = strTemp.TrimEnd('\"');
+                        strTemp = strTemp.Replace("&amp;", "&");
                         clTarjous.strAlkuperainenLinkki = strUriAlku+strTemp;
                     }
                     if (asOppi.First().ToLower().Contains("ilmo"))
                     {
-                        string strTemp = asOppi.Last().Remove(asOppi.Last().LastIndexOf("</"));
+                        string strTemp = asOppi.Last().Remove(asOppi.Last().LastIndexOf("</a"));
                         strTemp = strTemp.Remove(0, strTemp.LastIndexOf(">") + 1);
                         clTarjous.strPyynto = strTemp;
                     }
                     if (asOppi.First().ToLower().Contains("kuvaus"))
                     {
-                        clTarjous.strKuvaus = asOppi.Last();
+                        string strTemp= asOppi.Last();
+                        if (-1 != asOppi.Last().LastIndexOf("style="))
+                        {
+                            strTemp = asOppi.Last().Remove(asOppi.Last().LastIndexOf("style="));
+                            strTemp = strTemp.Remove(0, strTemp.LastIndexOf("title=") + "title=".Length);
+                        }
+                        clTarjous.strKuvaus = strTemp;
                         
                     }
                     if (asOppi.First().ToLower().Contains("määrä"))
