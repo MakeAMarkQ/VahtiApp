@@ -26,7 +26,8 @@ namespace VahtiApp
         public int iPage = 0;
         public List<Uri> lstTPUrit;
         private List<string> lstSuodata;
-        private readonly string strSuodatin="Suodatin.txt"; 
+        private readonly string strSuodatin="Suodatin.txt";
+        private List<string> lstSuodin;
         //public string strAkliniurl = string.Empty;
         public Frm_Vahti_Main()
         {
@@ -38,6 +39,7 @@ namespace VahtiApp
             lstBrowsers = new List<WebBrowser>();
             lstTPUrit = new List<Uri>();
             lstSuodata = new List<string>();
+            lstSuodin = new List<string>();
         }
 
         private void Btn_PienHankinta_Click(object sender, EventArgs e)
@@ -70,14 +72,7 @@ namespace VahtiApp
             //}
         }
 
-        private void Btn_Load_Click(object sender, EventArgs e)
-        {
-            if(File.Exists(strSuodatin))
-            {
-                lstSuodata = File.ReadAllLines(strSuodatin).ToList();
-            }
-            
-        }
+        
 
         private void btn_tarjouksia_Click(object sender, EventArgs e)
         {
@@ -190,22 +185,24 @@ namespace VahtiApp
 
         private void Btn_Hilma_Click(object sender, EventArgs e)
         {
+            string pvm = "2000-07-05";
             Trace.WriteLine("Hilma");
             //RTbx_VahtiLog.AppendText(Environment.NewLine + "Alku");
             //WebBrowser WBrHilma = new WebBrowser();
-            TB_Kerta.Text = "0";
+            //TB_Kerta.Text = "0";
             WBrHilma.Name = "Hilma";
-            WBrHilma.DocumentCompleted += WBrHilma_DokumenttiTaydellinen;
-            //WBrHilma.Navigate(@"https://www.hankintailmoitukset.fi/fi/search?top=1500&other=showActive&of=tendersOrRequestsToParticipateDueDateTime&od=asc");
-            WBrHilma.Navigate(@"https://www.hankintailmoitukset.fi/fi/search?top=2000&pa=2000-07-05&other=showActive&of=datePublished&od=desc");
-            //WBrHilma.Navigate(@"https://www.hankintailmoitukset.fi/fi/search?top=12&other=showActive&of=datePublished&od=desc");
 
+            WBrHilma.DocumentCompleted += WBrHilma_DokumenttiTaydellinen;
+            //string srtNavigate=@"https://www.hankintailmoitukset.fi/fi/search?top=1500&other=showActive&of=tendersOrRequestsToParticipateDueDateTime&od=asc";
+            string srtNavigate =$"https://www.hankintailmoitukset.fi/fi/search?top=2000&pa="+pvm+"&other=showActive&of=datePublished&od=desc";
+            //string srtNavigate=@"https://www.hankintailmoitukset.fi/fi/search?top=12&other=showActive&of=datePublished&od=desc";
+            WBrHilma.Navigate(srtNavigate);
         }
         private void WBrHilma_DokumenttiTaydellinen(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            int iKerta;
-            int.TryParse(TB_Kerta.Text, out iKerta);
-            TB_Kerta.Text = (++iKerta).ToString();
+            //int iKerta;
+            //int.TryParse(TB_Kerta.Text, out iKerta);
+            //TB_Kerta.Text = (++iKerta).ToString();
             //check that the full document is finished
             if (e.Url.AbsolutePath != (sender as WebBrowser).Url.AbsolutePath)
                 return;
@@ -244,6 +241,9 @@ namespace VahtiApp
                 XmlDocument doc = new XmlDocument();
                 doc.Load(strFileName);
                 XmlNodeList nodes = doc.DocumentElement.SelectNodes("/Tarjoukset/tarjous");
+                TSSttsBr_Vahti.Maximum = nodes.Count / 10;
+                TSSttsBr_Vahti.Value = 0;
+                int iLoop = 0;
                 foreach (XmlNode node in nodes)
                 {
                     Tarjous clTarjous = new Tarjous();
@@ -261,12 +261,18 @@ namespace VahtiApp
                     clTarjous.strFiltered = node.SelectSingleNode("Filtered").InnerText;
                     clTarjous.strIlmoitusTyyppi = node.SelectSingleNode("IlmoitusTyyppi").InnerText;
                     lstKaikkiTajoukset.Add(clTarjous);
+                    if (iLoop % 10 == 0)
+                    {
+                        TSSttsBr_Vahti.Value = iLoop / 10;
+                        Application.DoEvents();
+                    }
+                    iLoop++;
                 }
                 lbl_Tarjouksia.Text = lstKaikkiTajoukset.Count().ToString();
 
             }
         }
-        private void Btn_JTarj_Click(object sender, EventArgs e)
+        private void Btn_Talleta_Click(object sender, EventArgs e)
         {
             if (lstKaikkiTajoukset.Count > 0)
             {
@@ -317,18 +323,91 @@ namespace VahtiApp
                 lbl_timer.Text = "Timer Running: webs opened:" +iPage+"/"+ iSivuja;
             }
         }
-
+        private void Btn_Lisaa_Click(object sender, EventArgs e)
+        {
+            if(!lstSuodin.Contains(TB_Kerta.Text))
+                lstSuodin.Add(TB_Kerta.Text);
+            lstSuodin.Sort();
+            File.WriteAllLines(strSuodatin, lstSuodin.ToArray());
+            Btn_Suodata_Click(sender,e);
+        }
 
 
         private void Btn_Suodata_Click(object sender, EventArgs e)
         {
-            List<string> ela= new List<string>() { "Kissa", "Koira" };
-            List<Tarjous> b = lstKaikkiTajoukset.FindAll(x => x.strFiltered.Contains("fa"));
-            var c = from m in b
-                    where 
-                    (ela.Any(n => m.strPyynto.Contains(n)) || ela.Any(n => m.strKuvaus.Contains(n)))
-                    select m;
+            if (File.Exists(strSuodatin))
+                lstSuodin = File.ReadAllLines(strSuodatin).ToList();
+            Lbx_Vahti.Items.Clear();
+            foreach (var txt in lstSuodin)
+                Lbx_Vahti.Items.Add(txt);
+            List<Tarjous> lstEiSuodatetut = lstKaikkiTajoukset.FindAll(x => x.strFiltered.ToLower().Contains("fa"));
+            int iCount = lstEiSuodatetut.Count;
+            TsStpLbl_Vahti.Text = iCount.ToString();
+            TSSttsBr_Vahti.Maximum = lstEiSuodatetut.Count / 100;
+            TSSttsBr_Vahti.Value = 0;
+            int iLoop = 0;
+            foreach (Tarjous clTarj in lstEiSuodatetut)
+            {
+                foreach(var strSana in lstSuodin)
+                {
+                    if(clTarj.strPyynto.ToLower().Contains(strSana)||
+                        clTarj.strKuvaus.ToLower().Contains(strSana))
+                    {
+                        clTarj.strFiltered = "True";
+                        iCount--;
+                        TsStpLbl_Vahti.Text = iCount.ToString();
+                        RTxtBx_Vahti.Text = RTxtBx_Vahti.Text.Replace(clTarj.ToString() + Environment.NewLine, " ");
+                    }
+                    if (iLoop % 100 == 0)
+                    {
+                        TSSttsBr_Vahti.Value= iLoop / 100;
+                        Application.DoEvents();
+                    }
+                }
+                    iLoop++;
+            }
             //var e = a.Intersect(b).Any();
+            Btn_Talleta_Click(sender, e);
+        }
+
+        private void Btn_Listaa_Click(object sender, EventArgs e)
+        {
+            WBrHilma.Visible = false;
+            RTxtBx_Vahti.Visible = true;
+            RTxtBx_Vahti.Clear();
+            List<Tarjous> lstEiSuodatetut = lstKaikkiTajoukset.FindAll(x => x.strFiltered.ToLower().Contains("fa"));
+            TsStpLbl_Vahti.Text = lstEiSuodatetut.Count.ToString();
+            TSSttsBr_Vahti.Maximum = lstEiSuodatetut.Count / 10;
+            TSSttsBr_Vahti.Value = 0;
+            int iLoop = 0;
+            foreach (Tarjous clTarj in lstEiSuodatetut)
+            {
+                RTxtBx_Vahti.Text += clTarj.ToString() + Environment.NewLine;
+                if(iLoop%10==0)
+                {
+                    TSSttsBr_Vahti.Value = iLoop / 10;
+                    Application.DoEvents();
+                }
+                iLoop++;
+            }
+            
+        }
+
+        private void Frm_Vahti_Main_SizeChanged(object sender, EventArgs e)
+        {
+            RTxtBx_Vahti.Left = 590;
+            WBrHilma.Left = 590;
+        }
+
+        private void btn_Rapotti_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Frm_Vahti_Main_Resize(object sender, EventArgs e)
+        {
+
+            SplCnt_Vahti.SplitterDistance = 590;
         }
     }
 }

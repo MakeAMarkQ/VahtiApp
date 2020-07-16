@@ -57,7 +57,7 @@ namespace VahtiApp
             }
         }
         public string strFiltered { get { return bFiltered.ToString(); }
-            internal set { bFiltered=value.Equals("true"); } }
+            internal set { bFiltered=value.ToLower().Equals("true"); } }
         public string strIlmoitusTyyppi { get; internal set; }
 
         private DateTime dtMaaraAika;
