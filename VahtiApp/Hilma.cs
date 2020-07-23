@@ -29,7 +29,7 @@ namespace VahtiApp
             string strEtiEka = "<table";
             string strEti1ka = "</table>";
 
-            bool bOk = false;
+            //bool bOk = false;
             int iOnPaikalla = strEtusivu.LastIndexOf(strEtiEka);
             if (-1 == iOnPaikalla)
             {

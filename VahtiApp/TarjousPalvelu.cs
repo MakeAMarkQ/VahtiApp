@@ -218,7 +218,7 @@ namespace VahtiApp
             string strEti3ka = "ctl00_PageContent_GridView1_wrapper";
             string strEti4ka = "ctl00_PageContent_MuutIlmOts";
             //if (!strPaikka.Equals("caruna,p=191")) return true;
-            bool bOk = false;
+            //bool bOk = false;
             int iOnPaikalla = strEtusivu.LastIndexOf(strEtiEka);
             if (-1 == iOnPaikalla)
             {
@@ -323,6 +323,7 @@ namespace VahtiApp
                     }
 
                 }
+                clTarjous.strDataBase = "TP";
                 lstTajoukset.Add(clTarjous);
 
             }
@@ -330,6 +331,7 @@ namespace VahtiApp
 
         }
         internal override string Tallenne() { return strSivuTiedosto; }
+        
     }
 
 }

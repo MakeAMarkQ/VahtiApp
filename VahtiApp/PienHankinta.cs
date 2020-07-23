@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using HtmlAgilityPack;
 using System.IO;
 using System.Diagnostics;
+using System.Net;
 
 namespace VahtiApp
 {
@@ -163,6 +164,7 @@ namespace VahtiApp
                                     clTarjous.strKuvaus = palat[2].Remove(0, palat[2].IndexOf("=") + 1).Replace("&nbsp;", " ").Trim(charsToTrim);
                                     clTarjous.strMaaraAika = palat[3].Remove(0, palat[3].IndexOf("=") + 1).Replace("&nbsp;", " ").Trim(charsToTrim);
                                     //Must check if current offer is already in list
+                                    clTarjous.strDataBase = "PH";
                                     lstTajoukset.Add(clTarjous);
                                 }
                             }
@@ -266,6 +268,43 @@ namespace VahtiApp
 
             return lstRetVal;
         }
-        internal override string Tallenne() {return strSivuTiedosto; }
+        private string puraKuvausSivut(string inTeksiti)
+        {
+            //<tr>
+            //< td class="bold">Hankinnan kuvaus:</td>
+            //<td>
+            //Tarjouskilpailu koskee ruokakuljetuksia 
+            //Tarjouskilpailun kohde on m&#228;&#228;ritelty tarjouskilpailuasiakirjassa: ”PALVELUKUVAUS”.                    
+            //</td>
+            //</tr>
+            char[] charsToTrim = { '{', ' ', '}', '\n', '\r' };
+            string strKuvaus = inTeksiti.Remove(0, inTeksiti.IndexOf("Hankinnan kuvaus"));
+            strKuvaus = strKuvaus.Remove(strKuvaus.IndexOf("</tr>"));
+            strKuvaus = strKuvaus.Remove(0, strKuvaus.IndexOf("<td"));
+            strKuvaus = strKuvaus.Remove(strKuvaus.IndexOf("</td>"));
+            strKuvaus = strKuvaus.Remove(0, strKuvaus.IndexOf(">")+1);
+            strKuvaus = strKuvaus.Replace("&#228;", "ä").Replace("&#246;", "ö").Replace("&#196;", "Ä");
+            strKuvaus = strKuvaus.Replace("\r", " ").Replace("\n", " ");
+            strKuvaus = strKuvaus.Trim(charsToTrim);
+            return strKuvaus;
+        }
+        internal virtual string GetKuvaus(string strUri)
+        {
+            string strEtusivu = string.Empty;
+            Uri uri = new Uri(strUri);
+
+            Trace.WriteLine(uri);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+
+            var response = (HttpWebResponse)request.GetResponse();
+            var stream = response.GetResponseStream();
+            var reader = new StreamReader(stream);
+
+            var data = reader.ReadToEnd();
+
+            strEtusivu = puraKuvausSivut(data);
+
+            return strEtusivu;
+        }
     }
 }

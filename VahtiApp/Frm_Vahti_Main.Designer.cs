@@ -34,7 +34,10 @@ namespace VahtiApp
             this.Tmr_Vahti = new System.Windows.Forms.Timer(this.components);
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.TSSttsBr_Vahti = new System.Windows.Forms.ToolStripProgressBar();
+            this.TsStpLbl_Vahti = new System.Windows.Forms.ToolStripStatusLabel();
             this.SplCnt_Vahti = new System.Windows.Forms.SplitContainer();
+            this.Btn_Erotele_Sanat = new System.Windows.Forms.Button();
+            this.chkbxlst_VahtiSanat = new System.Windows.Forms.CheckedListBox();
             this.btn_Rapotti = new System.Windows.Forms.Button();
             this.Btn_Listaa = new System.Windows.Forms.Button();
             this.Btn_Suodata = new System.Windows.Forms.Button();
@@ -56,7 +59,8 @@ namespace VahtiApp
             this.TB_Kerta = new System.Windows.Forms.TextBox();
             this.RTxtBx_Vahti = new System.Windows.Forms.RichTextBox();
             this.WBrHilma = new System.Windows.Forms.WebBrowser();
-            this.TsStpLbl_Vahti = new System.Windows.Forms.ToolStripStatusLabel();
+            this.TsStsLbl_Vahti_ToDo = new System.Windows.Forms.ToolStripStatusLabel();
+            this.Btn_Kuvaus = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SplCnt_Vahti)).BeginInit();
             this.SplCnt_Vahti.Panel1.SuspendLayout();
@@ -71,6 +75,7 @@ namespace VahtiApp
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.TsStsLbl_Vahti_ToDo,
             this.TSSttsBr_Vahti,
             this.TsStpLbl_Vahti});
             this.statusStrip1.Location = new System.Drawing.Point(0, 439);
@@ -84,6 +89,12 @@ namespace VahtiApp
             this.TSSttsBr_Vahti.Name = "TSSttsBr_Vahti";
             this.TSSttsBr_Vahti.Size = new System.Drawing.Size(300, 16);
             // 
+            // TsStpLbl_Vahti
+            // 
+            this.TsStpLbl_Vahti.Name = "TsStpLbl_Vahti";
+            this.TsStpLbl_Vahti.Size = new System.Drawing.Size(13, 17);
+            this.TsStpLbl_Vahti.Text = "0";
+            // 
             // SplCnt_Vahti
             // 
             this.SplCnt_Vahti.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -92,6 +103,9 @@ namespace VahtiApp
             // 
             // SplCnt_Vahti.Panel1
             // 
+            this.SplCnt_Vahti.Panel1.Controls.Add(this.Btn_Kuvaus);
+            this.SplCnt_Vahti.Panel1.Controls.Add(this.Btn_Erotele_Sanat);
+            this.SplCnt_Vahti.Panel1.Controls.Add(this.chkbxlst_VahtiSanat);
             this.SplCnt_Vahti.Panel1.Controls.Add(this.btn_Rapotti);
             this.SplCnt_Vahti.Panel1.Controls.Add(this.Btn_Listaa);
             this.SplCnt_Vahti.Panel1.Controls.Add(this.Btn_Suodata);
@@ -120,6 +134,24 @@ namespace VahtiApp
             this.SplCnt_Vahti.SplitterDistance = 568;
             this.SplCnt_Vahti.TabIndex = 22;
             // 
+            // Btn_Erotele_Sanat
+            // 
+            this.Btn_Erotele_Sanat.Location = new System.Drawing.Point(13, 193);
+            this.Btn_Erotele_Sanat.Name = "Btn_Erotele_Sanat";
+            this.Btn_Erotele_Sanat.Size = new System.Drawing.Size(102, 23);
+            this.Btn_Erotele_Sanat.TabIndex = 38;
+            this.Btn_Erotele_Sanat.Text = "Erottele sanat";
+            this.Btn_Erotele_Sanat.UseVisualStyleBackColor = true;
+            this.Btn_Erotele_Sanat.Click += new System.EventHandler(this.Btn_Erotele_Sanat_Click);
+            // 
+            // chkbxlst_VahtiSanat
+            // 
+            this.chkbxlst_VahtiSanat.FormattingEnabled = true;
+            this.chkbxlst_VahtiSanat.Location = new System.Drawing.Point(197, 129);
+            this.chkbxlst_VahtiSanat.Name = "chkbxlst_VahtiSanat";
+            this.chkbxlst_VahtiSanat.Size = new System.Drawing.Size(171, 289);
+            this.chkbxlst_VahtiSanat.TabIndex = 37;
+            // 
             // btn_Rapotti
             // 
             this.btn_Rapotti.Location = new System.Drawing.Point(12, 163);
@@ -142,7 +174,7 @@ namespace VahtiApp
             // 
             // Btn_Suodata
             // 
-            this.Btn_Suodata.Location = new System.Drawing.Point(202, 347);
+            this.Btn_Suodata.Location = new System.Drawing.Point(12, 314);
             this.Btn_Suodata.Name = "Btn_Suodata";
             this.Btn_Suodata.Size = new System.Drawing.Size(142, 22);
             this.Btn_Suodata.TabIndex = 34;
@@ -230,7 +262,7 @@ namespace VahtiApp
             // 
             // Btn_Lisaa
             // 
-            this.Btn_Lisaa.Location = new System.Drawing.Point(202, 375);
+            this.Btn_Lisaa.Location = new System.Drawing.Point(13, 351);
             this.Btn_Lisaa.Name = "Btn_Lisaa";
             this.Btn_Lisaa.Size = new System.Drawing.Size(142, 22);
             this.Btn_Lisaa.TabIndex = 25;
@@ -249,7 +281,7 @@ namespace VahtiApp
             // 
             // Btn_Sampo
             // 
-            this.Btn_Sampo.Location = new System.Drawing.Point(46, 221);
+            this.Btn_Sampo.Location = new System.Drawing.Point(46, 249);
             this.Btn_Sampo.Name = "Btn_Sampo";
             this.Btn_Sampo.Size = new System.Drawing.Size(104, 23);
             this.Btn_Sampo.TabIndex = 23;
@@ -301,16 +333,20 @@ namespace VahtiApp
             this.TB_Kerta.Name = "TB_Kerta";
             this.TB_Kerta.Size = new System.Drawing.Size(186, 20);
             this.TB_Kerta.TabIndex = 18;
+            this.TB_Kerta.TextChanged += new System.EventHandler(this.TB_Kerta_TextChanged);
             // 
             // RTxtBx_Vahti
             // 
+            this.RTxtBx_Vahti.AutoWordSelection = true;
             this.RTxtBx_Vahti.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.RTxtBx_Vahti.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.RTxtBx_Vahti.Location = new System.Drawing.Point(0, 0);
             this.RTxtBx_Vahti.Name = "RTxtBx_Vahti";
             this.RTxtBx_Vahti.Size = new System.Drawing.Size(582, 439);
             this.RTxtBx_Vahti.TabIndex = 21;
             this.RTxtBx_Vahti.Text = "";
             this.RTxtBx_Vahti.Visible = false;
+            this.RTxtBx_Vahti.SelectionChanged += new System.EventHandler(this.RTxtBx_Vahti_SelectionChanged);
             // 
             // WBrHilma
             // 
@@ -321,11 +357,21 @@ namespace VahtiApp
             this.WBrHilma.Size = new System.Drawing.Size(582, 439);
             this.WBrHilma.TabIndex = 9;
             // 
-            // TsStpLbl_Vahti
+            // TsStsLbl_Vahti_ToDo
             // 
-            this.TsStpLbl_Vahti.Name = "TsStpLbl_Vahti";
-            this.TsStpLbl_Vahti.Size = new System.Drawing.Size(13, 17);
-            this.TsStpLbl_Vahti.Text = "0";
+            this.TsStsLbl_Vahti_ToDo.Name = "TsStsLbl_Vahti_ToDo";
+            this.TsStsLbl_Vahti_ToDo.Size = new System.Drawing.Size(37, 17);
+            this.TsStsLbl_Vahti_ToDo.Text = "ToDo:";
+            // 
+            // Btn_Kuvaus
+            // 
+            this.Btn_Kuvaus.Location = new System.Drawing.Point(377, 41);
+            this.Btn_Kuvaus.Name = "Btn_Kuvaus";
+            this.Btn_Kuvaus.Size = new System.Drawing.Size(125, 23);
+            this.Btn_Kuvaus.TabIndex = 39;
+            this.Btn_Kuvaus.Text = "Tarkempi kuvaus";
+            this.Btn_Kuvaus.UseVisualStyleBackColor = true;
+            this.Btn_Kuvaus.Click += new System.EventHandler(this.Btn_Kuvaus_Click);
             // 
             // Frm_Vahti_Main
             // 
@@ -383,5 +429,9 @@ namespace VahtiApp
         private System.Windows.Forms.RichTextBox RTxtBx_Vahti;
         private System.Windows.Forms.WebBrowser WBrHilma;
         private System.Windows.Forms.ToolStripStatusLabel TsStpLbl_Vahti;
+        private System.Windows.Forms.CheckedListBox chkbxlst_VahtiSanat;
+        private System.Windows.Forms.Button Btn_Erotele_Sanat;
+        private System.Windows.Forms.ToolStripStatusLabel TsStsLbl_Vahti_ToDo;
+        private System.Windows.Forms.Button Btn_Kuvaus;
     }
 }
