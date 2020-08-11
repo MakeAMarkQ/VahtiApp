@@ -283,7 +283,7 @@ namespace VahtiApp
             strKuvaus = strKuvaus.Remove(0, strKuvaus.IndexOf("<td"));
             strKuvaus = strKuvaus.Remove(strKuvaus.IndexOf("</td>"));
             strKuvaus = strKuvaus.Remove(0, strKuvaus.IndexOf(">")+1);
-            strKuvaus = strKuvaus.Replace("&#228;", "ä").Replace("&#246;", "ö").Replace("&#196;", "Ä");
+            strKuvaus = strKuvaus.Replace("&#228;", "ä").Replace("&#246;", "ö").Replace("&#196;", "Ä").Replace("&#214", "í"); ;
             strKuvaus = strKuvaus.Replace("\r", " ").Replace("\n", " ");
             strKuvaus = strKuvaus.Trim(charsToTrim);
             return strKuvaus;

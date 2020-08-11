@@ -115,8 +115,8 @@ namespace VahtiApp
         internal Uri HaeNameUri(string inName)
         {
             inName = inName.Remove(inName.LastIndexOf(","));
-            return new Uri(strUriAlku+ inName);
- 
+            return new Uri(strUriAlku + inName);
+
         }
         /// <summary>
         /// Table to Html
@@ -140,7 +140,7 @@ namespace VahtiApp
                 .ToList();
             List<string> lstSarakeNimet = new List<string>();
             bool bOtsikot = false;
-            
+
 
             foreach (var Rivi in lstTaulukonSolujenTekstit)
             {
@@ -272,7 +272,7 @@ namespace VahtiApp
             foreach (var strRivi in table)
             {
                 string[] asOsat = strRivi.Split(new string[] { "][" }, StringSplitOptions.RemoveEmptyEntries);
-                Tarjous clTarjous = new Tarjous(strKunta,"Tarjouspalvelu");
+                Tarjous clTarjous = new Tarjous(strKunta, "Tarjouspalvelu");
                 foreach (var strOsa in asOsat)
                 {
                     string[] asOppi = strOsa.Split(new string[] { ":=" }, StringSplitOptions.RemoveEmptyEntries);
@@ -286,30 +286,34 @@ namespace VahtiApp
                     {
                         string strTemp = asOppi.Last().Remove(asOppi.Last().LastIndexOf("</"));
                         strTemp = strTemp.Remove(0, strTemp.LastIndexOf(">") + 1);
-                        clTarjous.strTunnus=strTemp;
+                        clTarjous.strTunnus = strTemp;
                         strTemp = asOppi.Last().Remove(0, asOppi.Last().IndexOf("href=") + 6);
                         strTemp = strTemp.Remove(strTemp.IndexOf(" ") - 1);
                         strTemp = strTemp.TrimStart('/');
                         strTemp = strTemp.TrimEnd('\"');
                         strTemp = strTemp.Replace("&amp;", "&");
-                        clTarjous.strAlkuperainenLinkki = strUriAlku+strTemp;
+                        clTarjous.strAlkuperainenLinkki = strUriAlku + strTemp;
                     }
                     if (asOppi.First().ToLower().Contains("ilmo"))
                     {
-                        string strTemp = asOppi.Last().Remove(asOppi.Last().LastIndexOf("</a"));
-                        strTemp = strTemp.Remove(0, strTemp.LastIndexOf(">") + 1);
+                        string strTemp = asOppi.Last();
+                        if (-1 != asOppi.Last().LastIndexOf("</a"))
+                        {
+                            strTemp = strTemp.Remove(asOppi.Last().LastIndexOf("</a"));
+                            strTemp = strTemp.Remove(0, strTemp.LastIndexOf(">") + 1);
+                        }
                         clTarjous.strPyynto = strTemp;
                     }
                     if (asOppi.First().ToLower().Contains("kuvaus"))
                     {
-                        string strTemp= asOppi.Last();
+                        string strTemp = asOppi.Last();
                         if (-1 != asOppi.Last().LastIndexOf("style="))
                         {
                             strTemp = asOppi.Last().Remove(asOppi.Last().LastIndexOf("style="));
                             strTemp = strTemp.Remove(0, strTemp.LastIndexOf("title=") + "title=".Length);
                         }
                         clTarjous.strKuvaus = strTemp;
-                        
+
                     }
                     if (asOppi.First().ToLower().Contains("määrä"))
                     {
@@ -331,7 +335,22 @@ namespace VahtiApp
 
         }
         internal override string Tallenne() { return strSivuTiedosto; }
-        
+        internal virtual string GetKuvaus(string inTeksiti)
+        {
+
+            char[] charsToTrim = { '{', ' ', '}', '\n', '\r' };
+            string strKuvaus = inTeksiti.Remove(0, inTeksiti.IndexOf("ctl00_PageContent_valKuvaus"));
+            strKuvaus = strKuvaus.Remove(strKuvaus.IndexOf("</tr>"));
+            strKuvaus = strKuvaus.Replace("</span>", " ").Replace("<br>", " ");
+            strKuvaus = strKuvaus.Remove(strKuvaus.IndexOf("</td>"));
+            strKuvaus = strKuvaus.Remove(0, strKuvaus.IndexOf(">") + 1);
+            strKuvaus = strKuvaus.Replace("&#228;", "ä").Replace("&#246;", "ö").Replace("&#196;", "Ä").Replace("&#214", "í");
+            strKuvaus = strKuvaus.Replace("\r", " ").Replace("\n", " ");
+            strKuvaus = strKuvaus.Trim(charsToTrim);
+            return strKuvaus;
+        }
+
     }
+
 
 }

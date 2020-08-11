@@ -68,6 +68,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tarjous.cs" />
     <Compile Include="TarjousPalvelu.cs" />
+    <Compile Include="Tulostukset.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -33,9 +33,11 @@ namespace VahtiApp
             this.components = new System.ComponentModel.Container();
             this.Tmr_Vahti = new System.Windows.Forms.Timer(this.components);
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.TsStsLbl_Vahti_ToDo = new System.Windows.Forms.ToolStripStatusLabel();
             this.TSSttsBr_Vahti = new System.Windows.Forms.ToolStripProgressBar();
             this.TsStpLbl_Vahti = new System.Windows.Forms.ToolStripStatusLabel();
             this.SplCnt_Vahti = new System.Windows.Forms.SplitContainer();
+            this.Btn_Kuvaus = new System.Windows.Forms.Button();
             this.Btn_Erotele_Sanat = new System.Windows.Forms.Button();
             this.chkbxlst_VahtiSanat = new System.Windows.Forms.CheckedListBox();
             this.btn_Rapotti = new System.Windows.Forms.Button();
@@ -57,15 +59,18 @@ namespace VahtiApp
             this.Btn_PienHankinta = new System.Windows.Forms.Button();
             this.Lbx_Vahti = new System.Windows.Forms.ListBox();
             this.TB_Kerta = new System.Windows.Forms.TextBox();
-            this.RTxtBx_Vahti = new System.Windows.Forms.RichTextBox();
+            this.TbCnt_Vahti = new System.Windows.Forms.TabControl();
+            this.PG_Vahti = new System.Windows.Forms.TabPage();
             this.WBrHilma = new System.Windows.Forms.WebBrowser();
-            this.TsStsLbl_Vahti_ToDo = new System.Windows.Forms.ToolStripStatusLabel();
-            this.Btn_Kuvaus = new System.Windows.Forms.Button();
+            this.RchTxtBx_Vahti = new System.Windows.Forms.RichTextBox();
+            this.Tmr_SivuVahti = new System.Windows.Forms.Timer(this.components);
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SplCnt_Vahti)).BeginInit();
             this.SplCnt_Vahti.Panel1.SuspendLayout();
             this.SplCnt_Vahti.Panel2.SuspendLayout();
             this.SplCnt_Vahti.SuspendLayout();
+            this.TbCnt_Vahti.SuspendLayout();
+            this.PG_Vahti.SuspendLayout();
             this.SuspendLayout();
             // 
             // Tmr_Vahti
@@ -83,6 +88,13 @@ namespace VahtiApp
             this.statusStrip1.Size = new System.Drawing.Size(1154, 22);
             this.statusStrip1.TabIndex = 21;
             this.statusStrip1.Text = "statusStrip1";
+            // 
+            // TsStsLbl_Vahti_ToDo
+            // 
+            this.TsStsLbl_Vahti_ToDo.AutoSize = false;
+            this.TsStsLbl_Vahti_ToDo.Name = "TsStsLbl_Vahti_ToDo";
+            this.TsStsLbl_Vahti_ToDo.Size = new System.Drawing.Size(200, 17);
+            this.TsStsLbl_Vahti_ToDo.Text = "ToDo:";
             // 
             // TSSttsBr_Vahti
             // 
@@ -128,11 +140,21 @@ namespace VahtiApp
             // 
             // SplCnt_Vahti.Panel2
             // 
-            this.SplCnt_Vahti.Panel2.Controls.Add(this.RTxtBx_Vahti);
-            this.SplCnt_Vahti.Panel2.Controls.Add(this.WBrHilma);
+            this.SplCnt_Vahti.Panel2.Controls.Add(this.TbCnt_Vahti);
+            this.SplCnt_Vahti.Panel2.Controls.Add(this.RchTxtBx_Vahti);
             this.SplCnt_Vahti.Size = new System.Drawing.Size(1154, 439);
             this.SplCnt_Vahti.SplitterDistance = 568;
             this.SplCnt_Vahti.TabIndex = 22;
+            // 
+            // Btn_Kuvaus
+            // 
+            this.Btn_Kuvaus.Location = new System.Drawing.Point(377, 41);
+            this.Btn_Kuvaus.Name = "Btn_Kuvaus";
+            this.Btn_Kuvaus.Size = new System.Drawing.Size(125, 23);
+            this.Btn_Kuvaus.TabIndex = 39;
+            this.Btn_Kuvaus.Text = "Tarkempi kuvaus";
+            this.Btn_Kuvaus.UseVisualStyleBackColor = true;
+            this.Btn_Kuvaus.Click += new System.EventHandler(this.Btn_Kuvaus_Click);
             // 
             // Btn_Erotele_Sanat
             // 
@@ -335,43 +357,52 @@ namespace VahtiApp
             this.TB_Kerta.TabIndex = 18;
             this.TB_Kerta.TextChanged += new System.EventHandler(this.TB_Kerta_TextChanged);
             // 
-            // RTxtBx_Vahti
+            // TbCnt_Vahti
             // 
-            this.RTxtBx_Vahti.AutoWordSelection = true;
-            this.RTxtBx_Vahti.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.RTxtBx_Vahti.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RTxtBx_Vahti.Location = new System.Drawing.Point(0, 0);
-            this.RTxtBx_Vahti.Name = "RTxtBx_Vahti";
-            this.RTxtBx_Vahti.Size = new System.Drawing.Size(582, 439);
-            this.RTxtBx_Vahti.TabIndex = 21;
-            this.RTxtBx_Vahti.Text = "";
-            this.RTxtBx_Vahti.Visible = false;
-            this.RTxtBx_Vahti.SelectionChanged += new System.EventHandler(this.RTxtBx_Vahti_SelectionChanged);
+            this.TbCnt_Vahti.Controls.Add(this.PG_Vahti);
+            this.TbCnt_Vahti.Location = new System.Drawing.Point(15, 12);
+            this.TbCnt_Vahti.Name = "TbCnt_Vahti";
+            this.TbCnt_Vahti.SelectedIndex = 0;
+            this.TbCnt_Vahti.Size = new System.Drawing.Size(472, 361);
+            this.TbCnt_Vahti.TabIndex = 22;
+            // 
+            // PG_Vahti
+            // 
+            this.PG_Vahti.Controls.Add(this.WBrHilma);
+            this.PG_Vahti.Location = new System.Drawing.Point(4, 22);
+            this.PG_Vahti.Name = "PG_Vahti";
+            this.PG_Vahti.Padding = new System.Windows.Forms.Padding(3);
+            this.PG_Vahti.Size = new System.Drawing.Size(464, 335);
+            this.PG_Vahti.TabIndex = 0;
+            this.PG_Vahti.Text = "WB_Hilma";
+            this.PG_Vahti.UseVisualStyleBackColor = true;
             // 
             // WBrHilma
             // 
             this.WBrHilma.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.WBrHilma.Location = new System.Drawing.Point(0, 0);
+            this.WBrHilma.Location = new System.Drawing.Point(3, 3);
             this.WBrHilma.MinimumSize = new System.Drawing.Size(20, 20);
             this.WBrHilma.Name = "WBrHilma";
-            this.WBrHilma.Size = new System.Drawing.Size(582, 439);
-            this.WBrHilma.TabIndex = 9;
+            this.WBrHilma.Size = new System.Drawing.Size(458, 329);
+            this.WBrHilma.TabIndex = 10;
+            this.WBrHilma.Url = new System.Uri("", System.UriKind.Relative);
+            this.WBrHilma.Navigated += new System.Windows.Forms.WebBrowserNavigatedEventHandler(this.WBrHilma_Navigated);
             // 
-            // TsStsLbl_Vahti_ToDo
+            // RchTxtBx_Vahti
             // 
-            this.TsStsLbl_Vahti_ToDo.Name = "TsStsLbl_Vahti_ToDo";
-            this.TsStsLbl_Vahti_ToDo.Size = new System.Drawing.Size(37, 17);
-            this.TsStsLbl_Vahti_ToDo.Text = "ToDo:";
+            this.RchTxtBx_Vahti.AutoWordSelection = true;
+            this.RchTxtBx_Vahti.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RchTxtBx_Vahti.Location = new System.Drawing.Point(0, 64);
+            this.RchTxtBx_Vahti.Name = "RchTxtBx_Vahti";
+            this.RchTxtBx_Vahti.Size = new System.Drawing.Size(508, 375);
+            this.RchTxtBx_Vahti.TabIndex = 21;
+            this.RchTxtBx_Vahti.Text = "";
+            this.RchTxtBx_Vahti.Visible = false;
+            this.RchTxtBx_Vahti.SelectionChanged += new System.EventHandler(this.RTxtBx_Vahti_SelectionChanged);
             // 
-            // Btn_Kuvaus
+            // Tmr_SivuVahti
             // 
-            this.Btn_Kuvaus.Location = new System.Drawing.Point(377, 41);
-            this.Btn_Kuvaus.Name = "Btn_Kuvaus";
-            this.Btn_Kuvaus.Size = new System.Drawing.Size(125, 23);
-            this.Btn_Kuvaus.TabIndex = 39;
-            this.Btn_Kuvaus.Text = "Tarkempi kuvaus";
-            this.Btn_Kuvaus.UseVisualStyleBackColor = true;
-            this.Btn_Kuvaus.Click += new System.EventHandler(this.Btn_Kuvaus_Click);
+            this.Tmr_SivuVahti.Tick += new System.EventHandler(this.Tmr_SivuVahti_Tick);
             // 
             // Frm_Vahti_Main
             // 
@@ -392,6 +423,8 @@ namespace VahtiApp
             this.SplCnt_Vahti.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.SplCnt_Vahti)).EndInit();
             this.SplCnt_Vahti.ResumeLayout(false);
+            this.TbCnt_Vahti.ResumeLayout(false);
+            this.PG_Vahti.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -402,7 +435,9 @@ namespace VahtiApp
         private PienHankinta clPienHankinta;
         private TarjousPalvelu clTarjouspalvelu;
         private Hilma clHilma;
+        private Tulostukset ClPrintti;
         private System.Collections.Generic.List<System.Windows.Forms.WebBrowser> lstBrowsers;
+        private System.Collections.Generic.List<string> lstHilmaWebPages;
         private System.Windows.Forms.Timer Tmr_Vahti;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripProgressBar TSSttsBr_Vahti;
@@ -426,12 +461,15 @@ namespace VahtiApp
         private System.Windows.Forms.Button Btn_PienHankinta;
         private System.Windows.Forms.ListBox Lbx_Vahti;
         private System.Windows.Forms.TextBox TB_Kerta;
-        private System.Windows.Forms.RichTextBox RTxtBx_Vahti;
-        private System.Windows.Forms.WebBrowser WBrHilma;
+        private System.Windows.Forms.RichTextBox RchTxtBx_Vahti;
         private System.Windows.Forms.ToolStripStatusLabel TsStpLbl_Vahti;
         private System.Windows.Forms.CheckedListBox chkbxlst_VahtiSanat;
         private System.Windows.Forms.Button Btn_Erotele_Sanat;
         private System.Windows.Forms.ToolStripStatusLabel TsStsLbl_Vahti_ToDo;
         private System.Windows.Forms.Button Btn_Kuvaus;
+        private System.Windows.Forms.Timer Tmr_SivuVahti;
+        private System.Windows.Forms.TabControl TbCnt_Vahti;
+        private System.Windows.Forms.TabPage PG_Vahti;
+        private System.Windows.Forms.WebBrowser WBrHilma;
     }
 }
