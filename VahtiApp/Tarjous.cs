@@ -8,6 +8,8 @@ namespace VahtiApp
     internal class Tarjous : IComparable<Tarjous>, IEquatable<Tarjous>
     {
         static int nro = 0;
+        static Tarjous clStaticMuisti;
+        
         public const int LuokkaVersion = 20200610;
         public string strKunta;
         public string strTunnus { get; set; }
@@ -94,7 +96,7 @@ namespace VahtiApp
         private bool bFiltered;
         private bool bkuvausHaettu;
         public bool bPoista;
-        private int iTarjNro;
+        public int iTarjNro;
 
         public Tarjous()
         {
@@ -137,8 +139,8 @@ namespace VahtiApp
         {
             String strRetVal = "<li> " + strMaaraAika + " <a href = \"#Link_" + iTarjNro + "\">";
             strRetVal += strPyynto +"</a></li>";
-            strRetVal += "<ul><li><span style = \"color: red;\">";
-            strRetVal += strKommentti + "</span></li></ul>";
+            //strRetVal += "<ul><li><span style = \"color: red;\">";
+            //strRetVal += strKommentti + "</span></li></ul>";
             return strRetVal;
         }
 
@@ -208,5 +210,14 @@ namespace VahtiApp
             return lstUudet;
         }
 
+        internal Tarjous kyseinen(Tarjous clUusi)
+        {
+            if (clUusi is null)
+                return clStaticMuisti;
+            else
+                clStaticMuisti = clUusi;
+            return null;
+
+        }
     }
 }

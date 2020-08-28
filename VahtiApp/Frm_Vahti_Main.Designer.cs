@@ -4,6 +4,7 @@ namespace VahtiApp
 {
     partial class Frm_Vahti_Main
     {
+       
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -37,6 +38,9 @@ namespace VahtiApp
             this.TSSttsBr_Vahti = new System.Windows.Forms.ToolStripProgressBar();
             this.TsStpLbl_Vahti = new System.Windows.Forms.ToolStripStatusLabel();
             this.SplCnt_Vahti = new System.Windows.Forms.SplitContainer();
+            this.ChckBx_Uusi = new System.Windows.Forms.CheckBox();
+            this.btn_Kasittele = new System.Windows.Forms.Button();
+            this.TxtTrace = new System.Windows.Forms.TextBox();
             this.Btn_Kuvaus = new System.Windows.Forms.Button();
             this.Btn_Erotele_Sanat = new System.Windows.Forms.Button();
             this.chkbxlst_VahtiSanat = new System.Windows.Forms.CheckedListBox();
@@ -64,6 +68,7 @@ namespace VahtiApp
             this.WBrHilma = new System.Windows.Forms.WebBrowser();
             this.RchTxtBx_Vahti = new System.Windows.Forms.RichTextBox();
             this.Tmr_SivuVahti = new System.Windows.Forms.Timer(this.components);
+            this.Btn_TalletaRaportti = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SplCnt_Vahti)).BeginInit();
             this.SplCnt_Vahti.Panel1.SuspendLayout();
@@ -83,7 +88,7 @@ namespace VahtiApp
             this.TsStsLbl_Vahti_ToDo,
             this.TSSttsBr_Vahti,
             this.TsStpLbl_Vahti});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 439);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 548);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(1154, 22);
             this.statusStrip1.TabIndex = 21;
@@ -115,6 +120,10 @@ namespace VahtiApp
             // 
             // SplCnt_Vahti.Panel1
             // 
+            this.SplCnt_Vahti.Panel1.Controls.Add(this.Btn_TalletaRaportti);
+            this.SplCnt_Vahti.Panel1.Controls.Add(this.ChckBx_Uusi);
+            this.SplCnt_Vahti.Panel1.Controls.Add(this.btn_Kasittele);
+            this.SplCnt_Vahti.Panel1.Controls.Add(this.TxtTrace);
             this.SplCnt_Vahti.Panel1.Controls.Add(this.Btn_Kuvaus);
             this.SplCnt_Vahti.Panel1.Controls.Add(this.Btn_Erotele_Sanat);
             this.SplCnt_Vahti.Panel1.Controls.Add(this.chkbxlst_VahtiSanat);
@@ -142,9 +151,40 @@ namespace VahtiApp
             // 
             this.SplCnt_Vahti.Panel2.Controls.Add(this.TbCnt_Vahti);
             this.SplCnt_Vahti.Panel2.Controls.Add(this.RchTxtBx_Vahti);
-            this.SplCnt_Vahti.Size = new System.Drawing.Size(1154, 439);
+            this.SplCnt_Vahti.Size = new System.Drawing.Size(1154, 548);
             this.SplCnt_Vahti.SplitterDistance = 568;
             this.SplCnt_Vahti.TabIndex = 22;
+            // 
+            // ChckBx_Uusi
+            // 
+            this.ChckBx_Uusi.AutoSize = true;
+            this.ChckBx_Uusi.Enabled = false;
+            this.ChckBx_Uusi.Location = new System.Drawing.Point(14, 229);
+            this.ChckBx_Uusi.Name = "ChckBx_Uusi";
+            this.ChckBx_Uusi.Size = new System.Drawing.Size(47, 17);
+            this.ChckBx_Uusi.TabIndex = 42;
+            this.ChckBx_Uusi.Text = "Uusi";
+            this.ChckBx_Uusi.UseVisualStyleBackColor = true;
+            this.ChckBx_Uusi.CheckStateChanged += new System.EventHandler(this.ChkBx_Vahti_CheckStateChanged);
+            // 
+            // btn_Kasittele
+            // 
+            this.btn_Kasittele.Location = new System.Drawing.Point(14, 252);
+            this.btn_Kasittele.Name = "btn_Kasittele";
+            this.btn_Kasittele.Size = new System.Drawing.Size(102, 25);
+            this.btn_Kasittele.TabIndex = 41;
+            this.btn_Kasittele.Text = "Käsittele";
+            this.btn_Kasittele.UseVisualStyleBackColor = true;
+            this.btn_Kasittele.Click += new System.EventHandler(this.btn_Kasittele_Click);
+            // 
+            // TxtTrace
+            // 
+            this.TxtTrace.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.TxtTrace.Location = new System.Drawing.Point(0, 454);
+            this.TxtTrace.Multiline = true;
+            this.TxtTrace.Name = "TxtTrace";
+            this.TxtTrace.Size = new System.Drawing.Size(568, 94);
+            this.TxtTrace.TabIndex = 40;
             // 
             // Btn_Kuvaus
             // 
@@ -158,9 +198,9 @@ namespace VahtiApp
             // 
             // Btn_Erotele_Sanat
             // 
-            this.Btn_Erotele_Sanat.Location = new System.Drawing.Point(13, 193);
+            this.Btn_Erotele_Sanat.Location = new System.Drawing.Point(197, 426);
             this.Btn_Erotele_Sanat.Name = "Btn_Erotele_Sanat";
-            this.Btn_Erotele_Sanat.Size = new System.Drawing.Size(102, 23);
+            this.Btn_Erotele_Sanat.Size = new System.Drawing.Size(103, 23);
             this.Btn_Erotele_Sanat.TabIndex = 38;
             this.Btn_Erotele_Sanat.Text = "Erottele sanat";
             this.Btn_Erotele_Sanat.UseVisualStyleBackColor = true;
@@ -284,7 +324,7 @@ namespace VahtiApp
             // 
             // Btn_Lisaa
             // 
-            this.Btn_Lisaa.Location = new System.Drawing.Point(13, 351);
+            this.Btn_Lisaa.Location = new System.Drawing.Point(401, 426);
             this.Btn_Lisaa.Name = "Btn_Lisaa";
             this.Btn_Lisaa.Size = new System.Drawing.Size(142, 22);
             this.Btn_Lisaa.TabIndex = 25;
@@ -294,7 +334,7 @@ namespace VahtiApp
             // 
             // Btn_ppy
             // 
-            this.Btn_ppy.Location = new System.Drawing.Point(46, 268);
+            this.Btn_ppy.Location = new System.Drawing.Point(11, 416);
             this.Btn_ppy.Name = "Btn_ppy";
             this.Btn_ppy.Size = new System.Drawing.Size(104, 23);
             this.Btn_ppy.TabIndex = 24;
@@ -303,7 +343,7 @@ namespace VahtiApp
             // 
             // Btn_Sampo
             // 
-            this.Btn_Sampo.Location = new System.Drawing.Point(46, 249);
+            this.Btn_Sampo.Location = new System.Drawing.Point(11, 395);
             this.Btn_Sampo.Name = "Btn_Sampo";
             this.Btn_Sampo.Size = new System.Drawing.Size(104, 23);
             this.Btn_Sampo.TabIndex = 23;
@@ -313,12 +353,13 @@ namespace VahtiApp
             // Btn_Hilma
             // 
             this.Btn_Hilma.Enabled = false;
-            this.Btn_Hilma.Location = new System.Drawing.Point(46, 405);
+            this.Btn_Hilma.Location = new System.Drawing.Point(459, 3);
             this.Btn_Hilma.Name = "Btn_Hilma";
             this.Btn_Hilma.Size = new System.Drawing.Size(104, 23);
             this.Btn_Hilma.TabIndex = 22;
             this.Btn_Hilma.Text = "HilmaSivu";
             this.Btn_Hilma.UseVisualStyleBackColor = true;
+            this.Btn_Hilma.Visible = false;
             this.Btn_Hilma.Click += new System.EventHandler(this.Btn_Hilma_Click);
             // 
             // Btn_Tarjouspalvelu
@@ -344,9 +385,9 @@ namespace VahtiApp
             // Lbx_Vahti
             // 
             this.Lbx_Vahti.FormattingEnabled = true;
-            this.Lbx_Vahti.Location = new System.Drawing.Point(379, 133);
+            this.Lbx_Vahti.Location = new System.Drawing.Point(377, 129);
             this.Lbx_Vahti.Name = "Lbx_Vahti";
-            this.Lbx_Vahti.Size = new System.Drawing.Size(186, 303);
+            this.Lbx_Vahti.Size = new System.Drawing.Size(186, 290);
             this.Lbx_Vahti.TabIndex = 19;
             // 
             // TB_Kerta
@@ -404,11 +445,22 @@ namespace VahtiApp
             // 
             this.Tmr_SivuVahti.Tick += new System.EventHandler(this.Tmr_SivuVahti_Tick);
             // 
+            // Btn_TalletaRaportti
+            // 
+            this.Btn_TalletaRaportti.Location = new System.Drawing.Point(12, 189);
+            this.Btn_TalletaRaportti.Name = "Btn_TalletaRaportti";
+            this.Btn_TalletaRaportti.Size = new System.Drawing.Size(103, 22);
+            this.Btn_TalletaRaportti.TabIndex = 43;
+            this.Btn_TalletaRaportti.Text = "Talleta Raportti";
+            this.Btn_TalletaRaportti.UseVisualStyleBackColor = true;
+            this.Btn_TalletaRaportti.Visible = false;
+            this.Btn_TalletaRaportti.Click += new System.EventHandler(this.Btn_TalletaRaportti_Click);
+            // 
             // Frm_Vahti_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1154, 461);
+            this.ClientSize = new System.Drawing.Size(1154, 570);
             this.Controls.Add(this.SplCnt_Vahti);
             this.Controls.Add(this.statusStrip1);
             this.Name = "Frm_Vahti_Main";
@@ -434,6 +486,7 @@ namespace VahtiApp
         private System.Collections.Generic.List<Tarjous> lstKaikkiTajoukset;
         private PienHankinta clPienHankinta;
         private TarjousPalvelu clTarjouspalvelu;
+
         private Hilma clHilma;
         private Tulostukset ClPrintti;
         private System.Collections.Generic.List<System.Windows.Forms.WebBrowser> lstBrowsers;
@@ -471,5 +524,9 @@ namespace VahtiApp
         private System.Windows.Forms.TabControl TbCnt_Vahti;
         private System.Windows.Forms.TabPage PG_Vahti;
         private System.Windows.Forms.WebBrowser WBrHilma;
+        private System.Windows.Forms.TextBox TxtTrace;
+        private System.Windows.Forms.CheckBox ChckBx_Uusi;
+        private System.Windows.Forms.Button btn_Kasittele;
+        private System.Windows.Forms.Button Btn_TalletaRaportti;
     }
 }

@@ -55,6 +55,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Frm_Tarjous.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Frm_Tarjous.Designer.cs">
+      <DependentUpon>Frm_Tarjous.cs</DependentUpon>
+    </Compile>
     <Compile Include="Frm_Vahti_Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -74,6 +80,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Frm_Tarjous.resx">
+      <DependentUpon>Frm_Tarjous.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Frm_Vahti_Main.resx">
       <DependentUpon>Frm_Vahti_Main.cs</DependentUpon>
     </EmbeddedResource>

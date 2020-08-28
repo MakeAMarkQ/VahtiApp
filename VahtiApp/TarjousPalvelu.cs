@@ -57,6 +57,7 @@ namespace VahtiApp
 
                 string[] strPalat = strIterSivu.Split(new char[] { ',' });
                 Trace.WriteLine($"Käsitellään Sivua {strPalat[0]}");
+                
 
                 Uri uri2Builder = new Uri(strUriAlku + strPalat[0]);
 
@@ -287,12 +288,16 @@ namespace VahtiApp
                         string strTemp = asOppi.Last().Remove(asOppi.Last().LastIndexOf("</"));
                         strTemp = strTemp.Remove(0, strTemp.LastIndexOf(">") + 1);
                         clTarjous.strTunnus = strTemp;
-                        strTemp = asOppi.Last().Remove(0, asOppi.Last().IndexOf("href=") + 6);
-                        strTemp = strTemp.Remove(strTemp.IndexOf(" ") - 1);
-                        strTemp = strTemp.TrimStart('/');
-                        strTemp = strTemp.TrimEnd('\"');
-                        strTemp = strTemp.Replace("&amp;", "&");
-                        clTarjous.strAlkuperainenLinkki = strUriAlku + strTemp;
+
+                        if (asOppi.Last().IndexOf("href=") != -1)
+                        {
+                            strTemp = asOppi.Last().Remove(0, asOppi.Last().IndexOf("href=") + 6);
+                            strTemp = strTemp.Remove(strTemp.IndexOf(" ") - 1);
+                            strTemp = strTemp.TrimStart('/');
+                            strTemp = strTemp.TrimEnd('\"');
+                            strTemp = strTemp.Replace("&amp;", "&");
+                            clTarjous.strAlkuperainenLinkki = strUriAlku + strTemp;
+                        }
                     }
                     if (asOppi.First().ToLower().Contains("ilmo"))
                     {

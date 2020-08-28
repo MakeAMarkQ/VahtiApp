@@ -30,7 +30,6 @@ namespace VahtiApp
             strRetVal += "<b> Hiukan ohjeita alkuun, <a href = \"#Lista\"> " +
                 "uudet kohteet </a></b><br>" + "<br>"+Environment.NewLine;
 
-            strRetVal += "<br> " + "<br>"+Environment.NewLine;
             strRetVal += " Ei muuta kuin tarjouksia lisää tekemään<br> " + Environment.NewLine +
                 "<ul>"+Environment.NewLine;
             
