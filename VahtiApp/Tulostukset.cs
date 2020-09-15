@@ -12,7 +12,7 @@ namespace VahtiApp
         {
 
         }
-        public string HTMLAlku(int ikpl)
+        public string HTMLAlku(int ikpl,int iAllkpl)
         {
             string strRetVal = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" " + Environment.NewLine;
             strRetVal += "\"http://www.w3.org/TR/html4/transitional.dtd\">" + "<br>"+Environment.NewLine;
@@ -25,7 +25,7 @@ namespace VahtiApp
             strRetVal += "<meta name = \"changed\" content = \"2020-07-30T19:55:44.123456789\"> " +Environment.NewLine;
             strRetVal += "</head>" +Environment.NewLine;
             strRetVal += " <body>" +Environment.NewLine;
-            strRetVal += "<h1> Avoimet hankinnat " + DateTime.Today.ToString("dd.MM.yyyy")+ " ("+ikpl.ToString()+")";
+            strRetVal += "<h1> Avoimet hankinnat " + DateTime.Today.ToString("dd.MM.yyyy")+ " ("+ikpl.ToString()+"/"+ iAllkpl.ToString() + ")";
             strRetVal += "</h1>" + "<br>"+Environment.NewLine;
             strRetVal += "<b> Hiukan ohjeita alkuun, <a href = \"#Lista\"> " +
                 "uudet kohteet </a></b><br>" + "<br>"+Environment.NewLine;

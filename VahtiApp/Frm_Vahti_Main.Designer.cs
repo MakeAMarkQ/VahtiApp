@@ -38,6 +38,7 @@ namespace VahtiApp
             this.TSSttsBr_Vahti = new System.Windows.Forms.ToolStripProgressBar();
             this.TsStpLbl_Vahti = new System.Windows.Forms.ToolStripStatusLabel();
             this.SplCnt_Vahti = new System.Windows.Forms.SplitContainer();
+            this.Btn_TalletaRaportti = new System.Windows.Forms.Button();
             this.ChckBx_Uusi = new System.Windows.Forms.CheckBox();
             this.btn_Kasittele = new System.Windows.Forms.Button();
             this.TxtTrace = new System.Windows.Forms.TextBox();
@@ -68,7 +69,6 @@ namespace VahtiApp
             this.WBrHilma = new System.Windows.Forms.WebBrowser();
             this.RchTxtBx_Vahti = new System.Windows.Forms.RichTextBox();
             this.Tmr_SivuVahti = new System.Windows.Forms.Timer(this.components);
-            this.Btn_TalletaRaportti = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SplCnt_Vahti)).BeginInit();
             this.SplCnt_Vahti.Panel1.SuspendLayout();
@@ -155,6 +155,17 @@ namespace VahtiApp
             this.SplCnt_Vahti.SplitterDistance = 568;
             this.SplCnt_Vahti.TabIndex = 22;
             // 
+            // Btn_TalletaRaportti
+            // 
+            this.Btn_TalletaRaportti.Location = new System.Drawing.Point(12, 189);
+            this.Btn_TalletaRaportti.Name = "Btn_TalletaRaportti";
+            this.Btn_TalletaRaportti.Size = new System.Drawing.Size(103, 22);
+            this.Btn_TalletaRaportti.TabIndex = 43;
+            this.Btn_TalletaRaportti.Text = "Talleta Raportti";
+            this.Btn_TalletaRaportti.UseVisualStyleBackColor = true;
+            this.Btn_TalletaRaportti.Visible = false;
+            this.Btn_TalletaRaportti.Click += new System.EventHandler(this.Btn_TalletaRaportti_Click);
+            // 
             // ChckBx_Uusi
             // 
             this.ChckBx_Uusi.AutoSize = true;
@@ -185,6 +196,7 @@ namespace VahtiApp
             this.TxtTrace.Name = "TxtTrace";
             this.TxtTrace.Size = new System.Drawing.Size(568, 94);
             this.TxtTrace.TabIndex = 40;
+            this.TxtTrace.TextChanged += new System.EventHandler(this.TxtTrace_TextChanged);
             // 
             // Btn_Kuvaus
             // 
@@ -445,17 +457,6 @@ namespace VahtiApp
             // 
             this.Tmr_SivuVahti.Tick += new System.EventHandler(this.Tmr_SivuVahti_Tick);
             // 
-            // Btn_TalletaRaportti
-            // 
-            this.Btn_TalletaRaportti.Location = new System.Drawing.Point(12, 189);
-            this.Btn_TalletaRaportti.Name = "Btn_TalletaRaportti";
-            this.Btn_TalletaRaportti.Size = new System.Drawing.Size(103, 22);
-            this.Btn_TalletaRaportti.TabIndex = 43;
-            this.Btn_TalletaRaportti.Text = "Talleta Raportti";
-            this.Btn_TalletaRaportti.UseVisualStyleBackColor = true;
-            this.Btn_TalletaRaportti.Visible = false;
-            this.Btn_TalletaRaportti.Click += new System.EventHandler(this.Btn_TalletaRaportti_Click);
-            // 
             // Frm_Vahti_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -465,6 +466,7 @@ namespace VahtiApp
             this.Controls.Add(this.statusStrip1);
             this.Name = "Frm_Vahti_Main";
             this.Text = "Frm_Vahti_Main";
+            this.Load += new System.EventHandler(this.Frm_Vahti_Main_Load);
             this.Shown += new System.EventHandler(this.Frm_Vahti_Main_Shown);
             this.SizeChanged += new System.EventHandler(this.Frm_Vahti_Main_SizeChanged);
             this.Resize += new System.EventHandler(this.Frm_Vahti_Main_Resize);

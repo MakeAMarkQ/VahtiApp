@@ -12,13 +12,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
+using Logging;
 
 namespace VahtiApp
 {
-    
+
     public partial class Frm_Vahti_Main : Form
     {
-        
+
         //Hilma clHilma = new Hilma();
         public bool bHilma = false;
         public bool bPienhankinta = false;
@@ -35,12 +36,13 @@ namespace VahtiApp
         private readonly string strSuodatin = "Suodatin.txt";
         private List<string> lstSuodin;
         public bool bHilmaLaukaistu = false;
+        TextBoxTraceListener _textBoxListener;
 
         //public string strAkliniurl = string.Empty;
         public Frm_Vahti_Main()
         {
             InitializeComponent();
-            
+
             this.lstKaikkiTajoukset = new System.Collections.Generic.List<Tarjous>();
             clPienHankinta = new PienHankinta();
             clTarjouspalvelu = new TarjousPalvelu();
@@ -51,6 +53,7 @@ namespace VahtiApp
             lstSuodata = new List<string>();
             lstSuodin = new List<string>();
             ClPrintti = new Tulostukset();
+
 
         }
 
@@ -283,9 +286,16 @@ namespace VahtiApp
                     lstKaikkiTajoukset.Add(clTarjous);
                     if (iLoop % 10 == 0)
                     {
-                        TSSttsBr_Vahti.Value = iLoop / 10;
-                        Application.DoEvents();
-                    }
+                        try 
+                        { 
+                            TSSttsBr_Vahti.Value = iLoop / 10;
+                            Application.DoEvents();
+                        }
+                        catch (Exception eValue)
+                        {
+                            Trace.WriteLine("Error: " + eValue.Message.ToString());
+                        }
+                }
                     iLoop++;
                 }
                 lbl_Tarjouksia.Text = lstKaikkiTajoukset.Count().ToString();
@@ -364,7 +374,7 @@ namespace VahtiApp
                 int iCount = lstEiSuodatetut.Count;
                 foreach (Tarjous clTarj in lstEiSuodatetut)
                 {
-                    
+
                     bool bPyynt = clTarj.strPyynto.ToLower().Contains(strSana);
                     bool bKuva = clTarj.strKuvaus.ToLower().Contains(strSana);
                     if (bPyynt ||
@@ -375,13 +385,13 @@ namespace VahtiApp
                         TsStpLbl_Vahti.Text = iCount.ToString();
                         int iLine = 0;
 
-                        
+
                         //continue;
                     }
                 }
                 Btn_Talleta_Click(sender, e);
             }
-            if(RchTxtBx_Vahti.Visible==true)
+            if (RchTxtBx_Vahti.Visible == true)
                 Btn_Listaa_Click(sender, e);
             else
                 btn_Rapotti_Click(sender, e);
@@ -455,13 +465,15 @@ namespace VahtiApp
                         }
                         continue;
                     }
-                    //if (clTarj.strPyynto.ToLower().Contains("vähittäismyynnistä"))
-                    //    iLoop = iLoop + 0;
-                    if (clTarj.strPyynto.ToLower().IndexOf(strSana) != -1 ||
-                        clTarj.strKuvaus.ToLower().IndexOf(strSana) != -1)
+                    int iPyyt = clTarj.strPyynto.ToLower().IndexOf(strSana);
+                    int iKuv = clTarj.strKuvaus.ToLower().IndexOf(strSana);
+                    if (iPyyt != -1 ||
+                        iKuv != -1)
                     {
 
-                        clTarj.strFiltered = "True";
+                     //if (clTarj.strPyynto.ToLower().Contains("studio"))
+                     //   iLoop = iLoop + 0;
+                       clTarj.strFiltered = "True";
                         iCount--;
                         TsStpLbl_Vahti.Text = iCount.ToString();
                         int iLine = 0;
@@ -527,6 +539,7 @@ namespace VahtiApp
             List<Tarjous> lstEiSuodatetut = lstKaikkiTajoukset.FindAll(x => x.strFiltered.ToLower().Contains("fa"));
             TsStpLbl_Vahti.Text = lstEiSuodatetut.Count.ToString();
             TSSttsBr_Vahti.Maximum = lstEiSuodatetut.Count / 10;
+            int iMax = TSSttsBr_Vahti.Maximum;
             TSSttsBr_Vahti.Value = 0;
             int iLoop = 0;
             foreach (Tarjous clTarj in lstEiSuodatetut)
@@ -534,10 +547,17 @@ namespace VahtiApp
                 RchTxtBx_Vahti.Text += clTarj.ToString().Replace("&quot;", "'").Replace("&#214;", "í") + Environment.NewLine;
                 if (iLoop % 10 == 0)
                 {
-                    if (iLoop / 10 > TSSttsBr_Vahti.Maximum)
-                        iLoop = TSSttsBr_Vahti.Maximum * 10 - 1;
-                    TSSttsBr_Vahti.Value = iLoop / 10;
-                    Application.DoEvents();
+                    if (iLoop / 10 > iMax)
+                        iLoop = iMax * 10 - 1;
+                    try
+                    {
+                        TSSttsBr_Vahti.Value = iLoop / 10;
+                        Application.DoEvents();
+                    }
+                    catch (Exception eValue)
+                    {
+                        Trace.WriteLine("Error: " + eValue.Message.ToString());
+                    }
                 }
                 iLoop++;
             }
@@ -566,7 +586,7 @@ namespace VahtiApp
             TSSttsBr_Vahti.Value = 0;
             string strEdPvm = DateTime.Today.AddDays(-7).ToString("yyyyMMdd_HHmm");
             int iLoop = 0;
-            string strHtmlDoku = ClPrintti.HTMLAlku(lstEiSuodatetut.Count);
+            string strHtmlDoku = ClPrintti.HTMLAlku(lstEiSuodatetut.Count, lstKaikkiTajoukset.Count);
             foreach (Tarjous clTarj in lstEiSuodatetut)
             {
                 if (clTarj.strJulkaistu.CompareTo(strEdPvm) == 1)
@@ -628,7 +648,7 @@ namespace VahtiApp
             TsStsLbl_Vahti_ToDo.Text = "Erottele Sanat";
             List<string> lstTemp = new List<string>();
             char[] charsToTrim = { ',', '.', ':', ';', ' ', '/', '(', ')', '{', '}', '%', '!','=','&','#',
-                                   '\n', '\r','\t', '\"', '\'', '+', '-',
+                                   '\n', '\r','\t', '\"', '\'', '+', '-','<','>',
                                    '\u2013','\u2018', '\u201C', '\u201D','\u2022','\u202F',
                                    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9','+', '-',
                                    '€', '£', '$' };//8220 & 8221
@@ -650,7 +670,7 @@ namespace VahtiApp
                     else
                         dctSanat.Add(strWord, 1);
                 }
-                arWords = clTarjous.strKuvaus.Split(new string[] { " ","\t","\n","\r" }, StringSplitOptions.RemoveEmptyEntries);
+                arWords = clTarjous.strKuvaus.Split(new string[] { " ", "\t", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var strIter in arWords)
                 {
                     string strWord = strIter.Replace("&quot;", "!").Trim(charsToTrim).ToLower();
@@ -730,7 +750,7 @@ namespace VahtiApp
             {
                 Tmr_Vahti.Stop();
                 lbl_timer.Text = "Timer stop" + " (" + lstHilmaWebPages.Count + ")";
-                if (lstHilmaWebPages.Count>0)
+                if (lstHilmaWebPages.Count > 0)
                 {
                     WBrHilma.Navigate(lstHilmaWebPages[0]);
                     PG_Vahti.Text = lstHilmaWebPages[0];
@@ -743,7 +763,10 @@ namespace VahtiApp
                     if (clTarj.strFiltered.ToLower().Contains("false")
                      && clTarj.strKuvaushaettu.ToLower().Contains("false"))
                     {
-
+                        if (clTarj.strAlkuperainenLinkki.ToLower().Contains("tarjouspalve"))
+                        {
+                            Trace.WriteLine("OK");
+                        }
                         Trace.WriteLine("C: " + clTarj.strAlkuperainenLinkki);
                         if (clTarj.strAlkuperainenLinkki.ToLower().Contains("pienhankinta"))
                         {
@@ -751,7 +774,7 @@ namespace VahtiApp
                             clTarj.strKuvaus = strKuv;
                             clTarj.strKuvaushaettu = "True";
                         }
-                        else if (clTarj.strAlkuperainenLinkki.ToLower().Contains("DpsIlmoitus"))
+                        else if (clTarj.strAlkuperainenLinkki.ToLower().Contains("dpsIlmoitus"))
                         {
                             WebBrowser wb = new WebBrowser();
                             wb.Name = clTarj.ToString().ToLower();
@@ -760,17 +783,19 @@ namespace VahtiApp
                             wb.Navigate(clTarj.strAlkuperainenLinkki);
                             lstBrowsers.Add(wb);
                         }
-                        else if (clTarj.strAlkuperainenLinkki.ToLower().Contains("TPPerustiedot"))
+                        else if (clTarj.strAlkuperainenLinkki.ToLower().Contains("tpperustie"))
                         {
-                            //string strLinkki = clTarj.strAlkuperainenLinkki;
+                            //string strLinkki = clTarj.strAlkuperainenLinkki;TPPerustiedot
                             //string strKuv = clPienHankinta.GetKuvaus(clTarj.strAlkuperainenLinkki);
                             ///tpTiivistelma.aspx?p=279&g=6401877d-ad30-42de-aa87-03f986c64811
                             WebBrowser wb = new WebBrowser();
                             wb.Name = clTarj.ToString().ToLower();
                             wb.Navigated += Kuvaus_Navigated;
                             //wb.DocumentCompleted += KuvausKokonaan;
+
                             wb.Navigate(clTarj.strAlkuperainenLinkki);
                             lstBrowsers.Add(wb);
+                            //lstHilmaWebPages.Add(clTarj.strAlkuperainenLinkki);
 
                         }
                         else if (clTarj.strAlkuperainenLinkki.ToLower().Contains("hankintailmoi"))
@@ -781,6 +806,17 @@ namespace VahtiApp
                             lstHilmaWebPages.Add(clTarj.strAlkuperainenLinkki + "details");
                             //iSivu = iSivuja;
                         }
+                        //else if (clTarj.strAlkuperainenLinkki.ToLower().Contains("tarjouspalve"))
+                        //{
+
+                        //    if (clTarj.strAlkuperainenLinkki.Contains("p=13&"))
+                        //    {
+                        //        int a = 0;
+                        //    }
+                        //    //lstHilmaWebPages.Add(clTarj.strAlkuperainenLinkki + "details");
+                        //    lstHilmaWebPages.Add(clTarj.strAlkuperainenLinkki);
+                        //    //iSivu = iSivuja;
+                        //}
 
                     }
                 }
@@ -814,7 +850,7 @@ namespace VahtiApp
             string strUri = browser.Url.ToString();
             ///tpTiivistelma.aspx?p=279&g=6401877d-ad30-42de-aa87-03f986c64811
             strUri = strUri.Replace("TPPerustiedot", "tpTiivistelma");
-            strUri = strUri.Remove(strUri.LastIndexOf("&"));
+            //strUri = strUri.Remove(strUri.LastIndexOf("&"));
 
             ////if (browser.Name.Contains("p=1295&"))
             ////    strAkliniurl = strUri.ToString();
@@ -845,7 +881,6 @@ namespace VahtiApp
             //check that the full document is finished
             if (e.Url.AbsolutePath != (sender as WebBrowser).Url.AbsolutePath)
                 return;
-
             //get our browser reference
             WebBrowser browser = sender as WebBrowser;
 
@@ -855,6 +890,7 @@ namespace VahtiApp
 
             string strKuv = clTarjouspalvelu.GetKuvaus(strSisalto);
             Tarjous clTarj = lstKaikkiTajoukset.Find(x => x.ToString().ToLower().Equals(browser.Name));
+            if (clTarj is null) return;
             clTarj.strKuvaus = strKuv;
             clTarj.strKuvaushaettu = "True";
         }
@@ -882,14 +918,16 @@ namespace VahtiApp
             if (!bHilmaLaukaistu)
             {
                 if ((WBrHilma.Document.Body != null) &&
-                    (WBrHilma.Document.Body.InnerHtml != null) &&
-                    WBrHilma.Document.Body.InnerHtml.ToLower().IndexOf("<table") != -1)
+                    (WBrHilma.Document.Body.InnerHtml != null))
                 {
-                    Tmr_SivuVahti.Stop();
-                    bHilmaLaukaistu = true;
-                    //MessageBox.Show("FOUND");
-                    //Tmr_SivuVahti.Enabled = false;
+                    if (WBrHilma.Document.Body.InnerHtml.ToLower().IndexOf("<table") != -1)
+                    {
+                        Tmr_SivuVahti.Stop();
+                        bHilmaLaukaistu = true;
+                        //MessageBox.Show("FOUND");
+                        //Tmr_SivuVahti.Enabled = false;
 
+                    }
                 }
 
             }
@@ -898,73 +936,56 @@ namespace VahtiApp
                 //foreach(var tps in lstHilmaWebPages)
                 //{
                 WebBrowser wb = WBrHilma;
+
                 if (wb.Document != null &&
-                    wb.Document.Body != null &&
-                    wb.Document.Body.InnerHtml.ToLower().IndexOf("vertbar") > -1)
+                    wb.Document.Body != null)
                 {
-                    string strLowerText = wb.Document.Body.InnerHtml.ToLower();
-                    Tarjous clNyt = null;
-                    foreach (Tarjous clTar in lstKaikkiTajoukset)
+                    if (wb.Document.Body.InnerHtml.ToLower().IndexOf("vertbar") > -1)
                     {
-                        string strOsallistuminen = clTar.strAlkuperainenLinkki.ToLower();
-
-                        if (wb.Url.ToString().ToLower().Contains(strOsallistuminen))
+                        string strLowerText = wb.Document.Body.InnerHtml.ToLower();
+                        Tarjous clNyt = null;
+                        foreach (Tarjous clTar in lstKaikkiTajoukset)
                         {
-                            clNyt = clTar;
-                            break;
-                        }
-                    }                    //ilmoittautumislinkki
-                    if (strLowerText.IndexOf("hankinta-asiakirjat") > -1)
-                    {
-                        //<a data-v-06571bbd="" href="https://tarjouspalvelu.fi/jns?id=308245&amp;tpk=59add8db-e654-4ad8-aa1f-a66ba054f72d" rel="external" 
-                        //take link up
-                        strLowerText = strLowerText.Remove(0, strLowerText.IndexOf("hankinta-asiakirjat"));
-                        int iStart = strLowerText.IndexOf("href=");
-                        if (iSivu > -1)
+                            string strOsallistuminen = clTar.strAlkuperainenLinkki.ToLower();
+
+                            if (wb.Url.ToString().ToLower().Contains(strOsallistuminen))
+                            {
+                                clNyt = clTar;
+                                break;
+                            }
+                        }                    //ilmoittautumislinkki
+                        if (strLowerText.IndexOf("hankinta-asiakirjat") > -1)
                         {
+                            //<a data-v-06571bbd="" href="https://tarjouspalvelu.fi/jns?id=308245&amp;tpk=59add8db-e654-4ad8-aa1f-a66ba054f72d" rel="external" 
+                            //take link up
+                            strLowerText = strLowerText.Remove(0, strLowerText.IndexOf("hankinta-asiakirjat"));
+                            int iStart = strLowerText.IndexOf("href=");
+                            if (iSivu > -1)
+                            {
 
-                            strLowerText = strLowerText.Remove(0, iStart);
-                            strLowerText = strLowerText.Remove(strLowerText.IndexOf(" "));
-                            strLowerText = strLowerText.Replace("href=", " ");
-                            strLowerText = strLowerText.Trim(charsToTrim).Replace("&amp;", "&");
-                            // we must know which offer is now and is there same offer in otherlinks.
+                                strLowerText = strLowerText.Remove(0, iStart);
+                                strLowerText = strLowerText.Remove(strLowerText.IndexOf(" "));
+                                strLowerText = strLowerText.Replace("href=", " ");
+                                strLowerText = strLowerText.Trim(charsToTrim).Replace("&amp;", "&");
+                                // we must know which offer is now and is there same offer in otherlinks.
 
-                            //EI TOIMI KOSKA EI SAMALLAINEN
-                            clNyt.strVaihtoehtoLinkki = strLowerText;
-                            if (strLowerText.ToLower().Contains("tarjouspalvelu.fi"))
-                                clNyt.strFiltered = "true";
+                                //EI TOIMI KOSKA EI SAMALLAINEN
+                                clNyt.strVaihtoehtoLinkki = strLowerText;
+                                if (strLowerText.ToLower().Contains("tarjouspalvelu.fi"))
+                                    clNyt.strFiltered = "true";
+
+                            }
 
                         }
-
-                    }
-                    apu++;
-                    strLowerText = wb.Document.Body.InnerHtml.ToLower();
-                    //if lyhyt kuvaus take that in kuvaus
-                    string strLKuv = "lyhyt kuvaus";
-                    if (strLowerText.IndexOf(strLKuv) > -1)
-                    {
-                        strLowerText = strLowerText.Remove(0, strLowerText.IndexOf(strLKuv) + strLKuv.Length);
-                        strLowerText = strLowerText.Remove(0, strLowerText.IndexOf(strLKuv) + strLKuv.Length);
-                        strLowerText = strLowerText.Remove(strLowerText.IndexOf("hankintanimikkeistö"));
-                        while (strLowerText.IndexOf('<') > -1)
-                        {
-                            strLowerText = strLowerText.Remove(strLowerText.IndexOf('<'), strLowerText.IndexOf('>') - strLowerText.IndexOf('<') + 1);
-                        }
-                        clNyt.strKuvaushaettu = "true";
-                        clNyt.strKuvaus = strLowerText;
-                        if (lstHilmaWebPages.Count > 0 &&
-                            wb.Document.Body.InnerHtml.ToLower().Contains(lstHilmaWebPages[0]))
-                            lstHilmaWebPages.RemoveAt(0);
-
-                    }
-                    else
-                    {
-                        strLKuv = "ilmoituksen kohteen kuvaus";
+                        apu++;
+                        strLowerText = wb.Document.Body.InnerHtml.ToLower();
+                        //if lyhyt kuvaus take that in kuvaus
+                        string strLKuv = "lyhyt kuvaus";
                         if (strLowerText.IndexOf(strLKuv) > -1)
                         {
                             strLowerText = strLowerText.Remove(0, strLowerText.IndexOf(strLKuv) + strLKuv.Length);
                             strLowerText = strLowerText.Remove(0, strLowerText.IndexOf(strLKuv) + strLKuv.Length);
-                            strLowerText = strLowerText.Remove(strLowerText.IndexOf("aluekoodi"));
+                            strLowerText = strLowerText.Remove(strLowerText.IndexOf("hankintanimikkeistö"));
                             while (strLowerText.IndexOf('<') > -1)
                             {
                                 strLowerText = strLowerText.Remove(strLowerText.IndexOf('<'), strLowerText.IndexOf('>') - strLowerText.IndexOf('<') + 1);
@@ -974,32 +995,52 @@ namespace VahtiApp
                             if (lstHilmaWebPages.Count > 0 &&
                                 wb.Document.Body.InnerHtml.ToLower().Contains(lstHilmaWebPages[0]))
                                 lstHilmaWebPages.RemoveAt(0);
+
+                        }
+                        else
+                        {
+                            strLKuv = "ilmoituksen kohteen kuvaus";
+                            if (strLowerText.IndexOf(strLKuv) > -1)
+                            {
+                                strLowerText = strLowerText.Remove(0, strLowerText.IndexOf(strLKuv) + strLKuv.Length);
+                                strLowerText = strLowerText.Remove(0, strLowerText.IndexOf(strLKuv) + strLKuv.Length);
+                                strLowerText = strLowerText.Remove(strLowerText.IndexOf("aluekoodi"));
+                                while (strLowerText.IndexOf('<') > -1)
+                                {
+                                    strLowerText = strLowerText.Remove(strLowerText.IndexOf('<'), strLowerText.IndexOf('>') - strLowerText.IndexOf('<') + 1);
+                                }
+                                clNyt.strKuvaushaettu = "true";
+                                clNyt.strKuvaus = strLowerText;
+                                if (lstHilmaWebPages.Count > 0 &&
+                                    wb.Document.Body.InnerHtml.ToLower().Contains(lstHilmaWebPages[0]))
+                                    lstHilmaWebPages.RemoveAt(0);
+                            }
+
                         }
 
-                    }
+                        //if (clNyt.strFiltered.ToLower().Contains("fa"))
+                        //{
+                        Tmr_SivuVahti.Stop();
 
-                    //if (clNyt.strFiltered.ToLower().Contains("fa"))
-                    //{
-                    Tmr_SivuVahti.Stop();
-
-                    if (lstHilmaWebPages.Count > 0)
-                    {
-                        if (lstHilmaWebPages.Count % 10 == 0)
-                            Btn_Talleta_Click(new object(), new EventArgs());
-                        Btn_Kuvaus_Click(new object(), new EventArgs());
-                        //WBrHilma.Navigate(lstHilmaWebPages[0] + "details");
-                        //PG_Vahti.Text = lstHilmaWebPages[0];
+                        if (lstHilmaWebPages.Count > 0)
+                        {
+                            if (lstHilmaWebPages.Count % 10 == 0)
+                                Btn_Talleta_Click(new object(), new EventArgs());
+                            Btn_Kuvaus_Click(new object(), new EventArgs());
+                            //WBrHilma.Navigate(lstHilmaWebPages[0] + "details");
+                            //PG_Vahti.Text = lstHilmaWebPages[0];
+                        }
+                        else
+                            PG_Vahti.Text = "Haettu";
+                        //}
                     }
                     else
-                        PG_Vahti.Text = "Haettu";
-                    //}
-                }
-                else
-                {
-                    //if (lstHilmaWebPages.Count > 0)
-                    //{
-                    //    Tmr_SivuVahti.Stop();
-                    //}
+                    {
+                        if (wb.Url.ToString().ToLower().Contains("tarjpuspal"))
+                        {
+                            int a = 0;
+                        }
+                    }
                 }
                 //}
             }
@@ -1027,28 +1068,31 @@ namespace VahtiApp
             if (ChckBx_Uusi.Enabled == false)
                 return;
             Tarjous clUusi = new Tarjous();
-            if(btn_Kasittele.Text.Equals("Uusi"))
+            if (btn_Kasittele.Text.Equals("Uusi"))
+            {
+                lstKaikkiTajoukset.Add(clUusi);
                 clUusi.kyseinen(clUusi);
+            }
             else
             {
-                if(RchTxtBx_Vahti.Visible)
+                if (RchTxtBx_Vahti.Visible)
                 {
                     clUusi.kyseinen(clUusi);
                 }
-                else if(WBrHilma.Visible)
+                else if (WBrHilma.Visible)
                 {
                     dynamic document = WBrHilma.Document.DomDocument;
                     dynamic selection = document.selection;
                     string text = selection.createRange().htmlText;
-                    string strEtsi = text.Remove(0, text.IndexOf("ink_")+ "ink_".Length);
+                    string strEtsi = text.Remove(0, text.IndexOf("ink_") + "ink_".Length);
                     strEtsi = strEtsi.Remove(strEtsi.IndexOf(">"));
                     int inro;
-                    bool bOk=int.TryParse(strEtsi, out inro);
+                    bool bOk = int.TryParse(strEtsi, out inro);
                     if (!bOk) return;
-                    Tarjous clEtsi = lstKaikkiTajoukset.Find(x => x.iTarjNro== inro);
+                    Tarjous clEtsi = lstKaikkiTajoukset.Find(x => x.iTarjNro == inro);
                     clUusi.kyseinen(clEtsi);
                 }
-                
+
             }
             Frm_Tarjous frm_tar = new Frm_Tarjous();
             frm_tar.Show();
@@ -1059,10 +1103,22 @@ namespace VahtiApp
             string strTemp = WBrHilma.DocumentText;
             //Automaattiseksi päiväys (Tiistille)
             DateTime dtNyt = DateTime.Now;
-            DayOfWeek DayOfWeek = dtNyt.DayOfWeek;
-            while (DayOfWeek != DayOfWeek.Tuesday)
+            //DayOfWeek DayOfWeek = dtNyt.DayOfWeek;
+            while (dtNyt.DayOfWeek != DayOfWeek.Tuesday)
                 dtNyt = dtNyt.AddDays(1);
-            File.WriteAllText(@"D:\InnoOk_AH\Avoimia_hankkeita "+dtNyt.ToString("yyyyMMdd")+".html", strTemp);
+            File.WriteAllText(@"D:\InnoOk_AH\Avoimia_hankkeita " + dtNyt.ToString("yyyyMMdd") + ".html", strTemp);
+        }
+
+        private void Frm_Vahti_Main_Load(object sender, EventArgs e)
+        {
+            _textBoxListener = new TextBoxTraceListener(TxtTrace);
+            Trace.Listeners.Add(_textBoxListener);
+        }
+
+        private void TxtTrace_TextChanged(object sender, EventArgs e)
+        {
+            TxtTrace.SelectionStart = TxtTrace.Text.Length;
+            TxtTrace.ScrollToCaret();
         }
     }
 }

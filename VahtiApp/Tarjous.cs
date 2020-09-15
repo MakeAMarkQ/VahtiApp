@@ -138,7 +138,7 @@ namespace VahtiApp
         public string ToHtmlHakemistoString()
         {
             String strRetVal = "<li> " + strMaaraAika + " <a href = \"#Link_" + iTarjNro + "\">";
-            strRetVal += strPyynto +"</a></li>";
+            strRetVal += strPyynto + " (<span style = \"color: red;\">"+ strKommentti + "</span> )" + "</a></li>";
             //strRetVal += "<ul><li><span style = \"color: red;\">";
             //strRetVal += strKommentti + "</span></li></ul>";
             return strRetVal;

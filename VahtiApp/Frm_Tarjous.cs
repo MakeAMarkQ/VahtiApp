@@ -69,6 +69,7 @@ namespace VahtiApp
             clEditTarjous.strVaihtoehtoLinkki = TxtBx_VaihtoehtoLinkki.Text;
             clEditTarjous.strFiltered = ChckBx_Filtered.Checked.ToString();
             clEditTarjous.strKuvaushaettu = ChckBx_Kuvaushaettu.Checked.ToString();
+            clEditTarjous.kyseinen(clEditTarjous);
             this.Hide();
         }
     }

@@ -342,9 +342,19 @@ namespace VahtiApp
         internal override string Tallenne() { return strSivuTiedosto; }
         internal virtual string GetKuvaus(string inTeksiti)
         {
-
-            char[] charsToTrim = { '{', ' ', '}', '\n', '\r' };
-            string strKuvaus = inTeksiti.Remove(0, inTeksiti.IndexOf("ctl00_PageContent_valKuvaus"));
+            //<div id="ctl00_PageContent_tabCont_tab1" class="ajax__tab_panel" style="visibility: visible;">
+            //<iframe src="/tpTiivistelma.aspx?p=13&amp;g=0f3db498-2054-47c7-8efd-b52bdd8fd6fc" id="ctl00_PageContent_tabCont_tab1_frReferal" name="frReferal" style="width: 100%; height: 658px;" scrolling="no" frameborder="0"></iframe>
+                       char[] charsToTrim = { '{', ' ', '}', '\n', '\r' };
+            int iP100PC = inTeksiti.IndexOf("ctl00_PageContent_valKuvaus");
+            string strKuvaus;
+            if (iP100PC!=-1)
+                strKuvaus = inTeksiti.Remove(0, iP100PC);
+            else
+            {
+                iP100PC = inTeksiti.IndexOf("ctl00_PageContent_tabCont_tab1");
+                if (iP100PC == -1) return "N/A";
+                strKuvaus = inTeksiti.Remove(0, iP100PC);
+            }
             strKuvaus = strKuvaus.Remove(strKuvaus.IndexOf("</tr>"));
             strKuvaus = strKuvaus.Replace("</span>", " ").Replace("<br>", " ");
             strKuvaus = strKuvaus.Remove(strKuvaus.IndexOf("</td>"));
