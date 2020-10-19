@@ -10,6 +10,7 @@ namespace VahtiApp
         static int nro = 0;
         static Tarjous clStaticMuisti;
         
+
         public const int LuokkaVersion = 20200610;
         public string strKunta;
         public string strTunnus { get; set; }
@@ -137,28 +138,35 @@ namespace VahtiApp
         }
         public string ToHtmlHakemistoString()
         {
-            String strRetVal = "<li> " + strMaaraAika + " <a href = \"#Link_" + iTarjNro + "\">";
-            strRetVal += strPyynto + " (<span style = \"color: red;\">"+ strKommentti + "</span> )" + "</a></li>";
-            //strRetVal += "<ul><li><span style = \"color: red;\">";
-            //strRetVal += strKommentti + "</span></li></ul>";
+            String strRetVal = "<li> <input type=\"checkbox\" id=\"" + iTarjNro + "\" > " + strMaaraAika + " <a href = \"#Link_" + iTarjNro + "\">";
+            strRetVal += strPyynto; 
+            if(!strKommentti.Equals("N/A"))
+                strRetVal += " (<span style = \"color: red;\">" + strKommentti + "</span> )";
+            strRetVal += "</a></li>";
             return strRetVal;
         }
 
         public string ToHtmlKokoString()
         {
-            String strRetVal = "<h2>-<a name=\"Link_" + iTarjNro + "\"></a>-" + strMaaraAika + "--";
+            String strRetVal = "<h2>-<input type=\"checkbox\" id=\"" + iTarjNro + "_S\" ><a name=\"Link_" + iTarjNro + "\"></a>-" + strMaaraAika + "--";
             strRetVal += "<a href=\"" + strAlkuperainenLinkki + "\">" + strPyynto + "</a>" + Environment.NewLine;
             strRetVal += "<h3> Tarjousdokumentit </h3>" + Environment.NewLine;
-            strRetVal += "<ol><li> Tarjouspyyntö PDF: nä </li>" + Environment.NewLine;
-            strRetVal += "<li> Liite - hakemisto </li>    </ol> " + Environment.NewLine;
+            if(strTajousDocLinkki.Contains("N/A"))
+                strRetVal += "<ol><li> Tarjouspyyntö PDF: nä  ei asetettu </li>" + Environment.NewLine;
+            else
+                strRetVal += "<ol><li> <a href =\"" + strTajousDocLinkki + "\">Tarjouspyyntö PDF: nä  </a> </li>" + Environment.NewLine;
+            if (strTarjousDirLinkki.Contains("N/A"))
+                strRetVal += "<li> (Liite - hakemisto)  ei asetettu </li> </ol>" + Environment.NewLine;
+            else
+                strRetVal += "<li> <a href =\"" + strTarjousDirLinkki + "\">Liite - hakemisto  </a></li>    </ol> " + Environment.NewLine;
 
             strRetVal += "<h3> Kuvaus </h3> " + Environment.NewLine;
             strRetVal += "<p>"+strKuvaus+ "</p>" + Environment.NewLine;
             strRetVal += "<h3> Muuta huomioitavaa </h3> " + Environment.NewLine;
             strRetVal += "<h3> Muut linkit </h3> " + Environment.NewLine;
             strRetVal += "Lähde "+strDataBase + Environment.NewLine;
-            strRetVal += "<br>Aito: " + "<a href=\"" + strAlkuperainenLinkki + "\">" + strAlkuperainenLinkki + "</a>" + Environment.NewLine;
-            strRetVal += "<br>myös: " + "<a href=\"" + strVaihtoehtoLinkki + "\">" + strVaihtoehtoLinkki + "</a><br>" + Environment.NewLine;
+            strRetVal += "<br>Aito: <a href=\"" + strAlkuperainenLinkki + "\">" + strAlkuperainenLinkki + "</a>" + Environment.NewLine;
+            strRetVal += "<br>myös: <a href=\"" + strVaihtoehtoLinkki + "\">" + strVaihtoehtoLinkki + "</a><br>" + Environment.NewLine;
 
             strRetVal += "<h3> Kommentti </h3> " + Environment.NewLine;
             strRetVal += "<p><span style = \"color: red; \"> "+ strKommentti +"</span><br></p>" + Environment.NewLine;

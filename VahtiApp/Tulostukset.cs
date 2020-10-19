@@ -27,7 +27,7 @@ namespace VahtiApp
             strRetVal += " <body>" +Environment.NewLine;
             strRetVal += "<h1> Avoimet hankinnat " + DateTime.Today.ToString("dd.MM.yyyy")+ " ("+ikpl.ToString()+"/"+ iAllkpl.ToString() + ")";
             strRetVal += "</h1>" + "<br>"+Environment.NewLine;
-            strRetVal += "<b> Hiukan ohjeita alkuun, <a href = \"#Lista\"> " +
+            strRetVal += "<b> Hiukan ohjeita alkuun, <a name = \"Lista\"> " +
                 "uudet kohteet </a></b><br>" + "<br>"+Environment.NewLine;
 
             strRetVal += " Ei muuta kuin tarjouksia lisää tekemään<br> " + Environment.NewLine +

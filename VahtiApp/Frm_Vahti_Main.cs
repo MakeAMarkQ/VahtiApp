@@ -16,10 +16,10 @@ using Logging;
 
 namespace VahtiApp
 {
-
     public partial class Frm_Vahti_Main : Form
     {
 
+        
         //Hilma clHilma = new Hilma();
         public bool bHilma = false;
         public bool bPienhankinta = false;
@@ -37,13 +37,14 @@ namespace VahtiApp
         private List<string> lstSuodin;
         public bool bHilmaLaukaistu = false;
         TextBoxTraceListener _textBoxListener;
+        //TarjousManager TarMng;
 
         //public string strAkliniurl = string.Empty;
         public Frm_Vahti_Main()
         {
             InitializeComponent();
-
-            this.lstKaikkiTajoukset = new System.Collections.Generic.List<Tarjous>();
+            TarjousManager.lstKaikkiTajoukset=new System.Collections.Generic.List<Tarjous>();
+            //TarMng.TarjousManager.lstKaikkiTajoukset = new System.Collections.Generic.List<Tarjous>();
             clPienHankinta = new PienHankinta();
             clTarjouspalvelu = new TarjousPalvelu();
             clHilma = new Hilma();
@@ -78,7 +79,7 @@ namespace VahtiApp
             clPienHankinta.lstTajoukset.Sort();
             //bPienhankinta = true;
             CBx_Pien.Checked = true;
-            //lstKaikkiTajoukset.AddRange(clPienHankinta.lstTajoukset);
+            //TarjousManager.lstKaikkiTajoukset.AddRange(clPienHankinta.lstTajoukset);
             //Trace.WriteLine("strEHWReq");
             //
             //foreach (var clTar in clPienHankinta.lstTajoukset)
@@ -95,20 +96,20 @@ namespace VahtiApp
             // tänne myös hakujen filterointi
             if (CBx_Hilma.Checked == true && !bHilma)
             {
-                lstKaikkiTajoukset.AddRange(clTarTemp.UudetTarjoukset(lstKaikkiTajoukset, clHilma.lstTajoukset));
+                TarjousManager.lstKaikkiTajoukset.AddRange(clTarTemp.UudetTarjoukset(TarjousManager.lstKaikkiTajoukset, clHilma.lstTajoukset));
                 bHilma = true;
             }
             if (CBx_Pien.Checked == true && !bPienhankinta)
             {
-                lstKaikkiTajoukset.AddRange(clTarTemp.UudetTarjoukset(lstKaikkiTajoukset, clPienHankinta.lstTajoukset));
+                TarjousManager.lstKaikkiTajoukset.AddRange(clTarTemp.UudetTarjoukset(TarjousManager.lstKaikkiTajoukset, clPienHankinta.lstTajoukset));
                 bPienhankinta = true;
             }
             if (CBx_Tarjous.Checked == true && !bTarjouspalvelu)
             {
-                lstKaikkiTajoukset.AddRange(clTarTemp.UudetTarjoukset(lstKaikkiTajoukset, clTarjouspalvelu.lstTajoukset));
+                TarjousManager.lstKaikkiTajoukset.AddRange(clTarTemp.UudetTarjoukset(TarjousManager.lstKaikkiTajoukset, clTarjouspalvelu.lstTajoukset));
                 bTarjouspalvelu = true;
             }
-            lbl_Tarjouksia.Text = lstKaikkiTajoukset.Count().ToString();
+            lbl_Tarjouksia.Text = TarjousManager.lstKaikkiTajoukset.Count().ToString();
             //Uusi ikkuna jossa näytetään tiedot
         }
 
@@ -245,7 +246,7 @@ namespace VahtiApp
         {
             string txt = WBrHilma.Document.Body.InnerHtml;
             clHilma.PuraAlaSivut(txt, WBrHilma.Name);
-            //lstKaikkiTajoukset.AddRange(clHilma.lstTajoukset);
+            //TarjousManager.lstKaikkiTajoukset.AddRange(clHilma.lstTajoukset);
             //bHilma = true;
             CBx_Hilma.Checked = true;
         }
@@ -283,11 +284,12 @@ namespace VahtiApp
                     clTarjous.strKuvaushaettu = node.SelectSingleNode("Kuvaushaettu").InnerText;
                     clTarjous.strVaihtoehtoLinkki = node.SelectSingleNode("VaihtoehtoLinkki").InnerText;
                     clTarjous.strKommentti = node.SelectSingleNode("Kommentti").InnerText;
-                    lstKaikkiTajoukset.Add(clTarjous);
+                    TarjousManager.lstKaikkiTajoukset.Add(clTarjous);
                     if (iLoop % 10 == 0)
                     {
                         try 
-                        { 
+                        {
+                            if (TSSttsBr_Vahti is null) return;
                             TSSttsBr_Vahti.Value = iLoop / 10;
                             Application.DoEvents();
                         }
@@ -298,7 +300,7 @@ namespace VahtiApp
                 }
                     iLoop++;
                 }
-                lbl_Tarjouksia.Text = lstKaikkiTajoukset.Count().ToString();
+                lbl_Tarjouksia.Text = TarjousManager.lstKaikkiTajoukset.Count().ToString();
 
             }
             Btn_Suodata_Click(sender, e);
@@ -309,10 +311,10 @@ namespace VahtiApp
         }
         private void Btn_Talleta_Click(object sender, EventArgs e)
         {
-            if (lstKaikkiTajoukset.Count > 0)
+            if (TarjousManager.lstKaikkiTajoukset.Count > 0)
             {
 
-                var xml = new XElement("Tarjoukset", lstKaikkiTajoukset.Select(x => new XElement("tarjous",
+                var xml = new XElement("Tarjoukset", TarjousManager.lstKaikkiTajoukset.Select(x => new XElement("tarjous",
                                             new XElement("Kunta", x.strKunta),
                                             new XElement("Tunnus", x.strTunnus),
                                             new XElement("AlkuperainenLinkki", x.strAlkuperainenLinkki),
@@ -370,7 +372,7 @@ namespace VahtiApp
             if (!lstSuodin.Contains(strSana))
             {
                 //Btn_Suodata_Click(sender, e);
-                List<Tarjous> lstEiSuodatetut = lstKaikkiTajoukset.FindAll(x => x.strFiltered.ToLower().Contains("fa"));
+                List<Tarjous> lstEiSuodatetut = TarjousManager.lstKaikkiTajoukset.FindAll(x => x.strFiltered.ToLower().Contains("fa"));
                 int iCount = lstEiSuodatetut.Count;
                 foreach (Tarjous clTarj in lstEiSuodatetut)
                 {
@@ -420,7 +422,7 @@ namespace VahtiApp
             foreach (var txt in lstSuodin)
                 Lbx_Vahti.Items.Add(txt.ToLower());
             //take only non filtered Tarjous things
-            List<Tarjous> lstEiSuodatetut = lstKaikkiTajoukset.FindAll(x => x.strFiltered.ToLower().Contains("fa"));
+            List<Tarjous> lstEiSuodatetut = TarjousManager.lstKaikkiTajoukset.FindAll(x => x.strFiltered.ToLower().Contains("fa"));
             int iCount = lstEiSuodatetut.Count;
             TsStpLbl_Vahti.Text = iCount.ToString();
             TSSttsBr_Vahti.Maximum = lstEiSuodatetut.Count / 100;
@@ -535,8 +537,8 @@ namespace VahtiApp
             TbCnt_Vahti.Visible = false;
             RchTxtBx_Vahti.Visible = true;
             RchTxtBx_Vahti.Clear();
-            lstKaikkiTajoukset.Sort();
-            List<Tarjous> lstEiSuodatetut = lstKaikkiTajoukset.FindAll(x => x.strFiltered.ToLower().Contains("fa"));
+            TarjousManager.lstKaikkiTajoukset.Sort();
+            List<Tarjous> lstEiSuodatetut = TarjousManager.lstKaikkiTajoukset.FindAll(x => x.strFiltered.ToLower().Contains("fa"));
             TsStpLbl_Vahti.Text = lstEiSuodatetut.Count.ToString();
             TSSttsBr_Vahti.Maximum = lstEiSuodatetut.Count / 10;
             int iMax = TSSttsBr_Vahti.Maximum;
@@ -579,14 +581,18 @@ namespace VahtiApp
             TbCnt_Vahti.Visible = true;
             RchTxtBx_Vahti.Visible = false;
             RchTxtBx_Vahti.Clear();
-            lstKaikkiTajoukset.Sort();
-            List<Tarjous> lstEiSuodatetut = lstKaikkiTajoukset.FindAll(x => x.strFiltered.ToLower().Contains("fa"));
+            while (TbCnt_Vahti.TabPages.Count > 1)
+            {
+                TbCnt_Vahti.TabPages.RemoveAt(1);
+            }
+            TarjousManager.lstKaikkiTajoukset.Sort();
+            List<Tarjous> lstEiSuodatetut = TarjousManager.lstKaikkiTajoukset.FindAll(x => x.strFiltered.ToLower().Contains("fa"));
             TsStpLbl_Vahti.Text = lstEiSuodatetut.Count.ToString();
             TSSttsBr_Vahti.Maximum = lstEiSuodatetut.Count / 10;
             TSSttsBr_Vahti.Value = 0;
             string strEdPvm = DateTime.Today.AddDays(-7).ToString("yyyyMMdd_HHmm");
             int iLoop = 0;
-            string strHtmlDoku = ClPrintti.HTMLAlku(lstEiSuodatetut.Count, lstKaikkiTajoukset.Count);
+            string strHtmlDoku = ClPrintti.HTMLAlku(lstEiSuodatetut.Count, TarjousManager.lstKaikkiTajoukset.Count);
             foreach (Tarjous clTarj in lstEiSuodatetut)
             {
                 if (clTarj.strJulkaistu.CompareTo(strEdPvm) == 1)
@@ -653,7 +659,7 @@ namespace VahtiApp
                                    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9','+', '-',
                                    '€', '£', '$' };//8220 & 8221
             SortedDictionary<string, int> dctSanat = new SortedDictionary<string, int>();
-            foreach (var clTarjous in lstKaikkiTajoukset)
+            foreach (var clTarjous in TarjousManager.lstKaikkiTajoukset)
             {
                 string[] arWords = clTarjous.strPyynto.Split(new string[] { " ", "\t", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var strIter in arWords)
@@ -712,40 +718,66 @@ namespace VahtiApp
             RchTxtBx_Vahti.Visible = false;
             TbCnt_Vahti.Visible = true;
             WBrHilma.Visible = true;
-            TsStsLbl_Vahti_ToDo.Text = "Haetaan Kuvauksia";
-            int iLoop = 0;
-            while (iLoop < lstKaikkiTajoukset.Count)
+            while(TbCnt_Vahti.TabPages.Count>1)
             {
-                if (lstKaikkiTajoukset[iLoop].strMaaraAika.CompareTo(DateTime.Now.AddDays(1).ToString("yyyyMMdd_HHmm")) == -1)
-                {
-                    lstKaikkiTajoukset[iLoop].strFiltered = "True";
-                    lstKaikkiTajoukset[iLoop].bPoista = true;
-
-                }
-                if (lstKaikkiTajoukset[iLoop].strMaaraAika.Contains("9999"))
-                {
-                    lstKaikkiTajoukset[iLoop].strFiltered = "True";
-                    lstKaikkiTajoukset[iLoop].bPoista = true;
-                }
-                if (lstKaikkiTajoukset[iLoop].bPoista)
-                {
-                    lstKaikkiTajoukset.RemoveAt(iLoop);
-                }
-                else
-                    iLoop++;
+                TbCnt_Vahti.TabPages.RemoveAt(1);
             }
-            Tmr_Vahti.Interval = iInterKuvaus;
-            this.Tmr_Vahti.Tick -= new System.EventHandler(this.Tmr_Vahti_Tick);
-            this.Tmr_Vahti.Tick += new System.EventHandler(this.Tmr_VahtiKuvaus_Tick);
-            Tmr_Vahti.Start();
-            Tmr_SivuVahti.Enabled = true;
-            Tmr_SivuVahti.Interval = iInterSivu;
-            Tmr_SivuVahti.Start();
+            Application.DoEvents();
+            List<Tarjous> lstEiSuodatetut = TarjousManager.lstKaikkiTajoukset.FindAll(x => x.strFiltered.ToLower().Contains("fa"));
+            List<Tarjous> lstEiKuvaushaettu = lstEiSuodatetut.FindAll(x => x.strKuvaushaettu.ToLower().Contains("fa"));
+            int iHakematta = lstEiKuvaushaettu.Count;
+            int iHaettu = 1;
+            //foreach (Tarjous vTarj in lstEiKuvaushaettu)
+             for (int i=0;i< lstEiKuvaushaettu.Count;i++)
+            
+            {
+                
+                lbl_timer.Text = $"Vuorossa {iHaettu}/{iHakematta}";
+                WebSivut WebS = new WebSivut();
+                TabPage tab1 = WebS.LuoSivu(lstEiKuvaushaettu,i);
+                TbCnt_Vahti.Controls.Add(tab1);
+                iHaettu++;
+                if(iHaettu%30==1)
+                {
+                    TbCnt_Vahti.Refresh();
+                    Application.DoEvents();
+                    break;
+                }
+            }
+            //TsStsLbl_Vahti_ToDo.Text = "Haetaan Kuvauksia";
+            //int iLoop = 0;
+            //while (iLoop < TarjousManager.lstKaikkiTajoukset.Count)
+            //{
+            //    if (TarjousManager.lstKaikkiTajoukset[iLoop].strMaaraAika.CompareTo(DateTime.Now.AddDays(1).ToString("yyyyMMdd_HHmm")) == -1)
+            //    {
+            //        TarjousManager.lstKaikkiTajoukset[iLoop].strFiltered = "True";
+            //        TarjousManager.lstKaikkiTajoukset[iLoop].bPoista = true;
+
+            //    }
+            //    if (TarjousManager.lstKaikkiTajoukset[iLoop].strMaaraAika.Contains("9999"))
+            //    {
+            //        TarjousManager.lstKaikkiTajoukset[iLoop].strFiltered = "True";
+            //        TarjousManager.lstKaikkiTajoukset[iLoop].bPoista = true;
+            //    }
+            //    if (TarjousManager.lstKaikkiTajoukset[iLoop].bPoista)
+            //    {
+            //        TarjousManager.lstKaikkiTajoukset.RemoveAt(iLoop);
+            //    }
+            //    else
+            //        iLoop++;
+            //}
+            //Tmr_Vahti.Interval = iInterKuvaus;
+            //this.Tmr_Vahti.Tick -= new System.EventHandler(this.Tmr_Vahti_Tick);
+            //this.Tmr_Vahti.Tick += new System.EventHandler(this.Tmr_VahtiKuvaus_Tick);
+            //Tmr_Vahti.Start();
+            //Tmr_SivuVahti.Enabled = true;
+            //Tmr_SivuVahti.Interval = iInterSivu;
+            //Tmr_SivuVahti.Start();
             TsStsLbl_Vahti_ToDo.Text = "Kuvaus.Valm";
         }
         private void Tmr_VahtiKuvaus_Tick(object sender, EventArgs e)
         {
-            int iSivuja = lstKaikkiTajoukset.Count;
+            int iSivuja = TarjousManager.lstKaikkiTajoukset.Count;
             if (iSivu >= iSivuja)
             {
                 Tmr_Vahti.Stop();
@@ -758,7 +790,7 @@ namespace VahtiApp
             }
             else
             {
-                Tarjous clTarj = lstKaikkiTajoukset[iSivu];
+                Tarjous clTarj = TarjousManager.lstKaikkiTajoukset[iSivu];
                 {
                     if (clTarj.strFiltered.ToLower().Contains("false")
                      && clTarj.strKuvaushaettu.ToLower().Contains("false"))
@@ -819,8 +851,8 @@ namespace VahtiApp
                         //}
 
                     }
-                }
                 iSivu++;
+                }
                 lbl_timer.Text = "Timer Running: webs opened:" + iSivu + "/" + iSivuja + " (" + lstHilmaWebPages.Count + ")";
 
             }
@@ -836,7 +868,7 @@ namespace VahtiApp
             //WebBrowser snd = (WebBrowser)sender;
             string strSisalto = browser.DocumentText;
 
-            Trace.WriteLine($"Puretaan Sivua {browser.Name}");
+            Trace.WriteLine($"Puretaan Sivua {browser.Url.ToString()}");
         }
 
         private void Kuvaus_Navigated(object sender, WebBrowserNavigatedEventArgs e)
@@ -872,7 +904,7 @@ namespace VahtiApp
             Trace.WriteLine($"Puretaan Sivua {browser.Name}");
 
             //string strKuv = clTarjouspalvelu.GetKuvaus(strSisalto);
-            //Tarjous clTarj = lstKaikkiTajoukset.Find(x => x.ToString().ToLower().Equals(browser.Name));
+            //Tarjous clTarj = TarjousManager.lstKaikkiTajoukset.Find(x => x.ToString().ToLower().Equals(browser.Name));
             //clTarj.strKuvaus = strKuv;
             //clTarj.strKuvaushaettu = "True";
         }
@@ -889,7 +921,7 @@ namespace VahtiApp
             Trace.WriteLine($"Puretaan Sivua {browser.Name}");
 
             string strKuv = clTarjouspalvelu.GetKuvaus(strSisalto);
-            Tarjous clTarj = lstKaikkiTajoukset.Find(x => x.ToString().ToLower().Equals(browser.Name));
+            Tarjous clTarj = TarjousManager.lstKaikkiTajoukset.Find(x => x.ToString().ToLower().Equals(browser.Name));
             if (clTarj is null) return;
             clTarj.strKuvaus = strKuv;
             clTarj.strKuvaushaettu = "True";
@@ -907,7 +939,7 @@ namespace VahtiApp
             Trace.WriteLine($"Puretaan Sivua {browser.Name}");
 
             string strKuv = clTarjouspalvelu.GetKuvaus(strSisalto);
-            Tarjous clTarj = lstKaikkiTajoukset.Find(x => x.ToString().ToLower().Equals(browser.Name));
+            Tarjous clTarj = TarjousManager.lstKaikkiTajoukset.Find(x => x.ToString().ToLower().Equals(browser.Name));
             clTarj.strKuvaus = strKuv;
             clTarj.strKuvaushaettu = "True";
         }
@@ -936,7 +968,7 @@ namespace VahtiApp
                 //foreach(var tps in lstHilmaWebPages)
                 //{
                 WebBrowser wb = WBrHilma;
-
+                Trace.WriteLine($"Sivu: {wb.Url.ToString()}");
                 if (wb.Document != null &&
                     wb.Document.Body != null)
                 {
@@ -944,7 +976,7 @@ namespace VahtiApp
                     {
                         string strLowerText = wb.Document.Body.InnerHtml.ToLower();
                         Tarjous clNyt = null;
-                        foreach (Tarjous clTar in lstKaikkiTajoukset)
+                        foreach (Tarjous clTar in TarjousManager.lstKaikkiTajoukset)
                         {
                             string strOsallistuminen = clTar.strAlkuperainenLinkki.ToLower();
 
@@ -1034,7 +1066,7 @@ namespace VahtiApp
                             PG_Vahti.Text = "Haettu";
                         //}
                     }
-                    else
+                    else //if (wb.Document.Body.InnerHtml.ToLower().IndexOf("vertbar") > -1)
                     {
                         if (wb.Url.ToString().ToLower().Contains("tarjpuspal"))
                         {
@@ -1070,7 +1102,7 @@ namespace VahtiApp
             Tarjous clUusi = new Tarjous();
             if (btn_Kasittele.Text.Equals("Uusi"))
             {
-                lstKaikkiTajoukset.Add(clUusi);
+                TarjousManager.lstKaikkiTajoukset.Add(clUusi);
                 clUusi.kyseinen(clUusi);
             }
             else
@@ -1081,16 +1113,30 @@ namespace VahtiApp
                 }
                 else if (WBrHilma.Visible)
                 {
-                    dynamic document = WBrHilma.Document.DomDocument;
-                    dynamic selection = document.selection;
-                    string text = selection.createRange().htmlText;
-                    string strEtsi = text.Remove(0, text.IndexOf("ink_") + "ink_".Length);
-                    strEtsi = strEtsi.Remove(strEtsi.IndexOf(">"));
-                    int inro;
-                    bool bOk = int.TryParse(strEtsi, out inro);
-                    if (!bOk) return;
-                    Tarjous clEtsi = lstKaikkiTajoukset.Find(x => x.iTarjNro == inro);
-                    clUusi.kyseinen(clEtsi);
+                    //dynamic document = WBrHilma.Document.DomDocument;
+                    //dynamic selection = document.selection;
+                    //string text = selection.createRange().htmlText;
+                    //string strEtsi = text.Remove(0, text.IndexOf("ink_") + "ink_".Length);
+                    //strEtsi = strEtsi.Remove(strEtsi.IndexOf(">"));
+                    //int inro;
+                    //bool bOk = int.TryParse(strEtsi, out inro);
+                    //if (!bOk) return;
+                    //Tarjous clEtsi = TarjousManager.lstKaikkiTajoukset.Find(x => x.iTarjNro == inro);
+                    //clUusi.kyseinen(clEtsi);
+                    List<Tarjous> lstEiSuodatetut = TarjousManager.lstKaikkiTajoukset.FindAll(x => x.strFiltered.ToLower().Contains("fa"));
+                    foreach (Tarjous clTar in lstEiSuodatetut)
+                    {
+                        string strId = clTar.iTarjNro.ToString();
+                        var cl = WBrHilma.Document.GetElementById(strId).OuterHtml;
+                        var cs = WBrHilma.Document.GetElementById(strId + "_S").OuterHtml;
+                        if (cl.ToLower().Contains("checked") || cs.ToLower().Contains("checked"))
+                        {
+                            //clTar.strFiltered = "true";
+                            clUusi.kyseinen(clTar);
+                            break;
+                        }
+                    }
+
                 }
 
             }
@@ -1119,6 +1165,45 @@ namespace VahtiApp
         {
             TxtTrace.SelectionStart = TxtTrace.Text.Length;
             TxtTrace.ScrollToCaret();
+        }
+
+        private void tsbtn_Hilma_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tsbtn_Pien_Click(object sender, EventArgs e)
+        {
+            
+
+        }
+
+        private void tsbtn_tarjous_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void TSp_Btn_TarjInfo_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btn_EiKiinnosta_Click(object sender, EventArgs e)
+        {
+
+            List<Tarjous> lstEiSuodatetut = TarjousManager.lstKaikkiTajoukset.FindAll(x => x.strFiltered.ToLower().Contains("fa"));
+            foreach(Tarjous clTar in lstEiSuodatetut)
+            {
+                string strId = clTar.iTarjNro.ToString();
+                var cl = WBrHilma.Document.GetElementById(strId).OuterHtml;
+                var cs = WBrHilma.Document.GetElementById(strId+"_S").OuterHtml;
+                if(cl.ToLower().Contains("checked")|| cs.ToLower().Contains("checked"))
+                {
+                    clTar.strFiltered = "true";
+                }
+            }
+            //var g = document.getElementById("GFG").value;
+            btn_Rapotti_Click(sender, e);
         }
     }
 }

@@ -25,6 +25,7 @@ namespace VahtiApp
 
         private void Frm_Tarjous_Shown(object sender, EventArgs e)
         {
+            
             Tarjous clTemp = new Tarjous();
             clEditTarjous = clTemp.kyseinen(null);
             Txtbx_Kunta.Text = clEditTarjous.strKunta;
@@ -71,6 +72,26 @@ namespace VahtiApp
             clEditTarjous.strKuvaushaettu = ChckBx_Kuvaushaettu.Checked.ToString();
             clEditTarjous.kyseinen(clEditTarjous);
             this.Hide();
+        }
+
+        private void btnAP_Click(object sender, EventArgs e)
+        {
+            WB_tarous.Navigate(TxtBx_AlkuperainenLinkki.Text);
+        }
+
+        private void btnTDL_Click(object sender, EventArgs e)
+        {
+            WB_tarous.Navigate(TxtBx_TajousDocLinkki.Text);
+        }
+
+        private void btnVEL_Click(object sender, EventArgs e)
+        {
+            WB_tarous.Navigate(TxtBx_VaihtoehtoLinkki.Text);
+        }
+
+        private void btnTdirL_Click(object sender, EventArgs e)
+        {
+            WB_tarous.Navigate(TxtBx_TarjousDirLinkki.Text);
         }
     }
 }

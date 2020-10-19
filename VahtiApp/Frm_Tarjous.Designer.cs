@@ -29,6 +29,12 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnTdirL = new System.Windows.Forms.Button();
+            this.btnTDL = new System.Windows.Forms.Button();
+            this.btnVEL = new System.Windows.Forms.Button();
+            this.btnAP = new System.Windows.Forms.Button();
+            this.TxtBx_Kuvaus = new System.Windows.Forms.TextBox();
+            this.Lbl_Kuvaus = new System.Windows.Forms.Label();
             this.ChckBx_Kuvaushaettu = new System.Windows.Forms.CheckBox();
             this.ChckBx_Filtered = new System.Windows.Forms.CheckBox();
             this.btn_Ok = new System.Windows.Forms.Button();
@@ -59,13 +65,18 @@
             this.Txtbx_Kunta = new System.Windows.Forms.TextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.Lbl_Kuvaus = new System.Windows.Forms.Label();
-            this.TxtBx_Kuvaus = new System.Windows.Forms.TextBox();
+            this.wb_panel = new System.Windows.Forms.Panel();
+            this.WB_tarous = new System.Windows.Forms.WebBrowser();
             this.panel1.SuspendLayout();
+            this.wb_panel.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.btnTdirL);
+            this.panel1.Controls.Add(this.btnTDL);
+            this.panel1.Controls.Add(this.btnVEL);
+            this.panel1.Controls.Add(this.btnAP);
             this.panel1.Controls.Add(this.TxtBx_Kuvaus);
             this.panel1.Controls.Add(this.Lbl_Kuvaus);
             this.panel1.Controls.Add(this.ChckBx_Kuvaushaettu);
@@ -97,11 +108,69 @@
             this.panel1.Controls.Add(this.TxtBx_Tunnus);
             this.panel1.Controls.Add(this.Txtbx_Kunta);
             this.panel1.Controls.Add(this.statusStrip1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 24);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(800, 426);
             this.panel1.TabIndex = 0;
+            // 
+            // btnTdirL
+            // 
+            this.btnTdirL.Location = new System.Drawing.Point(767, 145);
+            this.btnTdirL.Name = "btnTdirL";
+            this.btnTdirL.Size = new System.Drawing.Size(33, 20);
+            this.btnTdirL.TabIndex = 34;
+            this.btnTdirL.Text = "=>";
+            this.btnTdirL.UseVisualStyleBackColor = true;
+            this.btnTdirL.Click += new System.EventHandler(this.btnTdirL_Click);
+            // 
+            // btnTDL
+            // 
+            this.btnTDL.Location = new System.Drawing.Point(767, 63);
+            this.btnTDL.Name = "btnTDL";
+            this.btnTDL.Size = new System.Drawing.Size(33, 20);
+            this.btnTDL.TabIndex = 33;
+            this.btnTDL.Text = "=>";
+            this.btnTDL.UseVisualStyleBackColor = true;
+            this.btnTDL.Click += new System.EventHandler(this.btnTDL_Click);
+            // 
+            // btnVEL
+            // 
+            this.btnVEL.Location = new System.Drawing.Point(767, 107);
+            this.btnVEL.Name = "btnVEL";
+            this.btnVEL.Size = new System.Drawing.Size(33, 20);
+            this.btnVEL.TabIndex = 32;
+            this.btnVEL.Text = "=>";
+            this.btnVEL.UseVisualStyleBackColor = true;
+            this.btnVEL.Click += new System.EventHandler(this.btnVEL_Click);
+            // 
+            // btnAP
+            // 
+            this.btnAP.Location = new System.Drawing.Point(767, 27);
+            this.btnAP.Name = "btnAP";
+            this.btnAP.Size = new System.Drawing.Size(33, 20);
+            this.btnAP.TabIndex = 31;
+            this.btnAP.Text = "=>";
+            this.btnAP.UseVisualStyleBackColor = true;
+            this.btnAP.Click += new System.EventHandler(this.btnAP_Click);
+            // 
+            // TxtBx_Kuvaus
+            // 
+            this.TxtBx_Kuvaus.Location = new System.Drawing.Point(295, 226);
+            this.TxtBx_Kuvaus.Multiline = true;
+            this.TxtBx_Kuvaus.Name = "TxtBx_Kuvaus";
+            this.TxtBx_Kuvaus.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.TxtBx_Kuvaus.Size = new System.Drawing.Size(493, 149);
+            this.TxtBx_Kuvaus.TabIndex = 30;
+            // 
+            // Lbl_Kuvaus
+            // 
+            this.Lbl_Kuvaus.AutoSize = true;
+            this.Lbl_Kuvaus.Location = new System.Drawing.Point(298, 211);
+            this.Lbl_Kuvaus.Name = "Lbl_Kuvaus";
+            this.Lbl_Kuvaus.Size = new System.Drawing.Size(43, 13);
+            this.Lbl_Kuvaus.TabIndex = 29;
+            this.Lbl_Kuvaus.Text = "Kuvaus";
             // 
             // ChckBx_Kuvaushaettu
             // 
@@ -262,7 +331,7 @@
             // 
             this.TxtBx_VaihtoehtoLinkki.Location = new System.Drawing.Point(295, 106);
             this.TxtBx_VaihtoehtoLinkki.Name = "TxtBx_VaihtoehtoLinkki";
-            this.TxtBx_VaihtoehtoLinkki.Size = new System.Drawing.Size(493, 20);
+            this.TxtBx_VaihtoehtoLinkki.Size = new System.Drawing.Size(466, 20);
             this.TxtBx_VaihtoehtoLinkki.TabIndex = 11;
             // 
             // TxtBx_IlmoitusTyyppi
@@ -304,21 +373,21 @@
             // 
             this.TxtBx_TarjousDirLinkki.Location = new System.Drawing.Point(295, 145);
             this.TxtBx_TarjousDirLinkki.Name = "TxtBx_TarjousDirLinkki";
-            this.TxtBx_TarjousDirLinkki.Size = new System.Drawing.Size(493, 20);
+            this.TxtBx_TarjousDirLinkki.Size = new System.Drawing.Size(466, 20);
             this.TxtBx_TarjousDirLinkki.TabIndex = 5;
             // 
             // TxtBx_TajousDocLinkki
             // 
             this.TxtBx_TajousDocLinkki.Location = new System.Drawing.Point(295, 63);
             this.TxtBx_TajousDocLinkki.Name = "TxtBx_TajousDocLinkki";
-            this.TxtBx_TajousDocLinkki.Size = new System.Drawing.Size(493, 20);
+            this.TxtBx_TajousDocLinkki.Size = new System.Drawing.Size(466, 20);
             this.TxtBx_TajousDocLinkki.TabIndex = 4;
             // 
             // TxtBx_AlkuperainenLinkki
             // 
             this.TxtBx_AlkuperainenLinkki.Location = new System.Drawing.Point(295, 24);
             this.TxtBx_AlkuperainenLinkki.Name = "TxtBx_AlkuperainenLinkki";
-            this.TxtBx_AlkuperainenLinkki.Size = new System.Drawing.Size(493, 20);
+            this.TxtBx_AlkuperainenLinkki.Size = new System.Drawing.Size(466, 20);
             this.TxtBx_AlkuperainenLinkki.TabIndex = 3;
             // 
             // TxtBx_Tunnus
@@ -347,41 +416,44 @@
             // 
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(800, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1203, 24);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // Lbl_Kuvaus
+            // wb_panel
             // 
-            this.Lbl_Kuvaus.AutoSize = true;
-            this.Lbl_Kuvaus.Location = new System.Drawing.Point(298, 211);
-            this.Lbl_Kuvaus.Name = "Lbl_Kuvaus";
-            this.Lbl_Kuvaus.Size = new System.Drawing.Size(43, 13);
-            this.Lbl_Kuvaus.TabIndex = 29;
-            this.Lbl_Kuvaus.Text = "Kuvaus";
+            this.wb_panel.Controls.Add(this.WB_tarous);
+            this.wb_panel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.wb_panel.Location = new System.Drawing.Point(800, 24);
+            this.wb_panel.Name = "wb_panel";
+            this.wb_panel.Size = new System.Drawing.Size(403, 426);
+            this.wb_panel.TabIndex = 2;
             // 
-            // TxtBx_Kuvaus
+            // WB_tarous
             // 
-            this.TxtBx_Kuvaus.Location = new System.Drawing.Point(295, 226);
-            this.TxtBx_Kuvaus.Multiline = true;
-            this.TxtBx_Kuvaus.Name = "TxtBx_Kuvaus";
-            this.TxtBx_Kuvaus.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.TxtBx_Kuvaus.Size = new System.Drawing.Size(493, 149);
-            this.TxtBx_Kuvaus.TabIndex = 30;
+            this.WB_tarous.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.WB_tarous.Location = new System.Drawing.Point(0, 0);
+            this.WB_tarous.MinimumSize = new System.Drawing.Size(20, 20);
+            this.WB_tarous.Name = "WB_tarous";
+            this.WB_tarous.Size = new System.Drawing.Size(403, 426);
+            this.WB_tarous.TabIndex = 0;
             // 
             // Frm_Tarjous
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1203, 450);
+            this.Controls.Add(this.wb_panel);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Frm_Tarjous";
             this.Text = "Tarjouslomake";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Shown += new System.EventHandler(this.Frm_Tarjous_Shown);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.wb_panel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -422,5 +494,11 @@
         private System.Windows.Forms.CheckBox ChckBx_Filtered;
         private System.Windows.Forms.TextBox TxtBx_Kuvaus;
         private System.Windows.Forms.Label Lbl_Kuvaus;
+        private System.Windows.Forms.Button btnTdirL;
+        private System.Windows.Forms.Button btnTDL;
+        private System.Windows.Forms.Button btnVEL;
+        private System.Windows.Forms.Button btnAP;
+        private System.Windows.Forms.Panel wb_panel;
+        private System.Windows.Forms.WebBrowser WB_tarous;
     }
 }
