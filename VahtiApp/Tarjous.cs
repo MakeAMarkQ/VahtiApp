@@ -82,7 +82,9 @@ namespace VahtiApp
         public string strFiltered
         {
             get { return bFiltered.ToString(); }
-            internal set { bFiltered = value.ToLower().Equals("true"); }
+            internal set { 
+                bFiltered = value.ToLower().Equals("true"); 
+            }
         }
         public string strIlmoitusTyyppi { get; internal set; }
         public string strKuvaushaettu
@@ -90,6 +92,7 @@ namespace VahtiApp
             get { return bkuvausHaettu.ToString(); }
             internal set { bkuvausHaettu = value.ToLower().Equals("true"); }
         }
+        public string strSuodatettu { get; internal set; }
         public string strVaihtoehtoLinkki { get; internal set; }
 
         private DateTime dtMaaraAika;
@@ -117,7 +120,8 @@ namespace VahtiApp
             strKuvaushaettu = "false";
             bPoista = false;
             strKommentti = "N/A";
-            iTarjNro=++nro;
+            strSuodatettu = "N/A";
+            iTarjNro =++nro;
 
 
         }
@@ -136,11 +140,25 @@ namespace VahtiApp
 
             return "{" + strMaaraAika + ": " + strPyynto + " (" + strKunta + ")[" + strDataBase + "]\n" + strKuvaus + "}";// + strTunnus +" = "+ strLinkki;
         }
-        public string ToHtmlHakemistoString()
+        public string ToHtmlHakemistoString(bool bShowId)
+        {
+            String strRetVal = "<li>";
+            if (bShowId)
+                strRetVal += iTarjNro;
+            strRetVal += "<input type=\"checkbox\" id=\"" + iTarjNro + "\" > " + strMaaraAika + " <a href = \"#Link_" + iTarjNro + "\">";
+            strRetVal += strPyynto;
+            if (!strKommentti.Equals("N/A"))
+                strRetVal += " (<span style = \"color: red;\">" + strKommentti + "</span> )";
+            strRetVal += "</a></li>";
+            return strRetVal;
+        }
+        public string ToHtmlHakemistoStringB(bool bChecked)
         {
             String strRetVal = "<li> <input type=\"checkbox\" id=\"" + iTarjNro + "\" > " + strMaaraAika + " <a href = \"#Link_" + iTarjNro + "\">";
-            strRetVal += strPyynto; 
-            if(!strKommentti.Equals("N/A"))
+            if(bChecked)
+                strRetVal = "<li> <input type=\"checkbox\" checked id=\"" + iTarjNro + "\" > " + strMaaraAika + " <a href = \"#Link_" + iTarjNro + "\">";
+            strRetVal += strPyynto;
+            if (!strKommentti.Equals("N/A"))
                 strRetVal += " (<span style = \"color: red;\">" + strKommentti + "</span> )";
             strRetVal += "</a></li>";
             return strRetVal;

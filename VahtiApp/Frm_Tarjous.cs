@@ -44,6 +44,7 @@ namespace VahtiApp
             TxtBx_VaihtoehtoLinkki.Text = clEditTarjous.strVaihtoehtoLinkki;
             ChckBx_Filtered.Checked = clEditTarjous.strFiltered.ToLower().Equals("true");
             ChckBx_Kuvaushaettu.Checked = clEditTarjous.strKuvaushaettu.ToLower().Equals("true");
+            TxtBx_Filters.Text = clEditTarjous.strSuodatettu;
 
 
         }
@@ -70,6 +71,7 @@ namespace VahtiApp
             clEditTarjous.strVaihtoehtoLinkki = TxtBx_VaihtoehtoLinkki.Text;
             clEditTarjous.strFiltered = ChckBx_Filtered.Checked.ToString();
             clEditTarjous.strKuvaushaettu = ChckBx_Kuvaushaettu.Checked.ToString();
+            clEditTarjous.strSuodatettu= TxtBx_Filters.Text;
             clEditTarjous.kyseinen(clEditTarjous);
             this.Hide();
         }
@@ -92,6 +94,65 @@ namespace VahtiApp
         private void btnTdirL_Click(object sender, EventArgs e)
         {
             WB_tarous.Navigate(TxtBx_TarjousDirLinkki.Text);
+        }
+
+        private void btn_Paste_Click(object sender, EventArgs e)
+        {
+            string strUKuvaus = Clipboard.GetText();
+            strUKuvaus = strUKuvaus.Replace("\n", "<br>\n");
+            TxtBx_Kuvaus.Text += "<br>" + strUKuvaus;
+        }
+
+        private void Btn_AddBr_Click(object sender, EventArgs e)
+        {
+            //string strTemp = TxtBx_Kuvaus.Text;
+            int iStart = TxtBx_Kuvaus.SelectionStart;
+            if (TxtBx_Kuvaus.SelectionStart > -1)
+            {
+
+                TxtBx_Kuvaus.Text = TxtBx_Kuvaus.Text.Insert(TxtBx_Kuvaus.SelectionStart, "<br>");
+                TxtBx_Kuvaus.SelectionStart = iStart;
+                TxtBx_Kuvaus.SelectionLength = 0;
+            }
+            else
+                TxtBx_Kuvaus.Text += "<br>";
+            //TxtBx_Kuvaus.Text= strTemp;
+            //TxtBx_Kuvaus.Refresh();
+            //TxtBx_Kuvaus
+            //this.Refresh();
+        }
+
+        private void Btn_AL_Click(object sender, EventArgs e)
+        {
+            if(!TxtBx_AlkuperainenLinkki.Text.Equals("N/A"))
+                System.Diagnostics.Process.Start(TxtBx_AlkuperainenLinkki.Text);
+        }
+
+        private void Btn_TDoc_Click(object sender, EventArgs e)
+        {
+            if (!TxtBx_TajousDocLinkki.Text.Equals("N/A"))
+                System.Diagnostics.Process.Start(TxtBx_TajousDocLinkki.Text);
+        }
+
+        private void Btn_VEL_Click(object sender, EventArgs e)
+        {
+            if (!TxtBx_VaihtoehtoLinkki.Text.Equals("N/A"))
+                System.Diagnostics.Process.Start(TxtBx_VaihtoehtoLinkki.Text);
+        }
+
+        private void Btn_TDir_Click(object sender, EventArgs e)
+        {
+            if (!TxtBx_TarjousDirLinkki.Text.Equals("N/A"))
+                System.Diagnostics.Process.Start(TxtBx_TarjousDirLinkki.Text);
+        }
+
+        private void Brn_Esikatso_Click(object sender, EventArgs e)
+        {
+            string strTmpKuvaus = clEditTarjous.strKuvaus;
+            clEditTarjous.strKuvaus = TxtBx_Kuvaus.Text;
+            string strTmpHtml=clEditTarjous.ToHtmlKokoString();
+            WB_tarous.DocumentText = strTmpHtml;
+            clEditTarjous.strKuvaus = strTmpKuvaus;
         }
     }
 }

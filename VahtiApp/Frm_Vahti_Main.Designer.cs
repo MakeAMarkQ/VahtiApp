@@ -38,6 +38,7 @@ namespace VahtiApp
             this.TSSttsBr_Vahti = new System.Windows.Forms.ToolStripProgressBar();
             this.TsStpLbl_Vahti = new System.Windows.Forms.ToolStripStatusLabel();
             this.SplCnt_Vahti = new System.Windows.Forms.SplitContainer();
+            this.btn_All = new System.Windows.Forms.Button();
             this.btn_EiKiinnosta = new System.Windows.Forms.Button();
             this.Btn_TalletaRaportti = new System.Windows.Forms.Button();
             this.ChckBx_Uusi = new System.Windows.Forms.CheckBox();
@@ -72,8 +73,10 @@ namespace VahtiApp
             this.tsWB = new System.Windows.Forms.ToolStrip();
             this.TSSep = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.TSTxtBx_Kommentti = new System.Windows.Forms.ToolStripTextBox();
             this.RchTxtBx_Vahti = new System.Windows.Forms.RichTextBox();
             this.Tmr_SivuVahti = new System.Windows.Forms.Timer(this.components);
+            this.CBx_ID = new System.Windows.Forms.CheckBox();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SplCnt_Vahti)).BeginInit();
             this.SplCnt_Vahti.Panel1.SuspendLayout();
@@ -127,6 +130,8 @@ namespace VahtiApp
             // 
             // SplCnt_Vahti.Panel1
             // 
+            this.SplCnt_Vahti.Panel1.Controls.Add(this.CBx_ID);
+            this.SplCnt_Vahti.Panel1.Controls.Add(this.btn_All);
             this.SplCnt_Vahti.Panel1.Controls.Add(this.btn_EiKiinnosta);
             this.SplCnt_Vahti.Panel1.Controls.Add(this.Btn_TalletaRaportti);
             this.SplCnt_Vahti.Panel1.Controls.Add(this.ChckBx_Uusi);
@@ -162,6 +167,16 @@ namespace VahtiApp
             this.SplCnt_Vahti.Size = new System.Drawing.Size(1154, 548);
             this.SplCnt_Vahti.SplitterDistance = 568;
             this.SplCnt_Vahti.TabIndex = 22;
+            // 
+            // btn_All
+            // 
+            this.btn_All.Location = new System.Drawing.Point(122, 416);
+            this.btn_All.Name = "btn_All";
+            this.btn_All.Size = new System.Drawing.Size(75, 23);
+            this.btn_All.TabIndex = 45;
+            this.btn_All.Text = "ListAll";
+            this.btn_All.UseVisualStyleBackColor = true;
+            this.btn_All.Click += new System.EventHandler(this.btn_All_Click);
             // 
             // btn_EiKiinnosta
             // 
@@ -228,7 +243,7 @@ namespace VahtiApp
             // 
             // Btn_Erotele_Sanat
             // 
-            this.Btn_Erotele_Sanat.Location = new System.Drawing.Point(197, 426);
+            this.Btn_Erotele_Sanat.Location = new System.Drawing.Point(265, 426);
             this.Btn_Erotele_Sanat.Name = "Btn_Erotele_Sanat";
             this.Btn_Erotele_Sanat.Size = new System.Drawing.Size(103, 23);
             this.Btn_Erotele_Sanat.TabIndex = 38;
@@ -472,7 +487,8 @@ namespace VahtiApp
             // 
             this.tsWB.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.TSSep,
-            this.toolStripSeparator2});
+            this.toolStripSeparator2,
+            this.TSTxtBx_Kommentti});
             this.tsWB.Location = new System.Drawing.Point(3, 3);
             this.tsWB.Name = "tsWB";
             this.tsWB.Size = new System.Drawing.Size(458, 25);
@@ -488,6 +504,12 @@ namespace VahtiApp
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
+            // TSTxtBx_Kommentti
+            // 
+            this.TSTxtBx_Kommentti.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.TSTxtBx_Kommentti.Name = "TSTxtBx_Kommentti";
+            this.TSTxtBx_Kommentti.Size = new System.Drawing.Size(100, 25);
             // 
             // RchTxtBx_Vahti
             // 
@@ -505,6 +527,16 @@ namespace VahtiApp
             // 
             this.Tmr_SivuVahti.Tick += new System.EventHandler(this.Tmr_SivuVahti_Tick);
             // 
+            // CBx_ID
+            // 
+            this.CBx_ID.AutoSize = true;
+            this.CBx_ID.Location = new System.Drawing.Point(202, 90);
+            this.CBx_ID.Name = "CBx_ID";
+            this.CBx_ID.Size = new System.Drawing.Size(72, 17);
+            this.CBx_ID.TabIndex = 46;
+            this.CBx_ID.Text = "Show IDs";
+            this.CBx_ID.UseVisualStyleBackColor = true;
+            // 
             // Frm_Vahti_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -514,6 +546,7 @@ namespace VahtiApp
             this.Controls.Add(this.statusStrip1);
             this.Name = "Frm_Vahti_Main";
             this.Text = "Frm_Vahti_Main";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Frm_Vahti_Main_FormClosing);
             this.Load += new System.EventHandler(this.Frm_Vahti_Main_Load);
             this.Shown += new System.EventHandler(this.Frm_Vahti_Main_Shown);
             this.SizeChanged += new System.EventHandler(this.Frm_Vahti_Main_SizeChanged);
@@ -587,5 +620,8 @@ namespace VahtiApp
         private System.Windows.Forms.ToolStripSeparator TSSep;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.Button btn_EiKiinnosta;
+        private System.Windows.Forms.Button btn_All;
+        private System.Windows.Forms.ToolStripTextBox TSTxtBx_Kommentti;
+        private System.Windows.Forms.CheckBox CBx_ID;
     }
 }

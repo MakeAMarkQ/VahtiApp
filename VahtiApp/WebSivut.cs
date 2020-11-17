@@ -14,6 +14,7 @@ namespace VahtiApp
     {
         private List<Tarjous> lstTarjous;
         private WebBrowser wb;
+        private ToolStripTextBox TSTxtBx_Kommentti;
         int id;
         //TarjousManager TrjMng;
         public WebSivut()
@@ -53,7 +54,7 @@ namespace VahtiApp
             tsbTT.ImageTransparentColor = System.Drawing.Color.Magenta;
             tsbTT.Name = "tsbTT";
             tsbTT.Size = new System.Drawing.Size(43, 22);
-            tsbTT.Text = "Skip";
+            tsbTT.Text = "Filtteröi";
             tsbTT.Click += new System.EventHandler(H_tsbTT_tarjous_Click);
             ToolStripButton tsbCP = new ToolStripButton();
             tsbCP.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -65,9 +66,22 @@ namespace VahtiApp
             ToolStripSeparator TSSep = new ToolStripSeparator();
             TSSep.Name = "TSSep";
             TSSep.Size = new System.Drawing.Size(6, 25);
+            //toolstriptextbox Kommentti
+
+            // 
+            // TSTxtBx_Kommentti
+            // 
+            TSTxtBx_Kommentti = new ToolStripTextBox();
+            TSTxtBx_Kommentti.Font = new System.Drawing.Font("Segoe UI", 9F);
+            TSTxtBx_Kommentti.Name = "TSTxtBx_Kommentti";
+            TSTxtBx_Kommentti.Size = new System.Drawing.Size(100, 25);
+            TSTxtBx_Kommentti.Text = "N/A";
 
             ToolStrip ts1 = new ToolStrip();
-            ts1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { tsbHi, TSSep,tsbPi, TSSep,tsbTa, tsbTT, TSSep,tsbCP });
+            ts1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { 
+                tsbHi, TSSep,tsbPi, 
+                TSSep,tsbTa, tsbTT, 
+                TSSep,tsbCP,TSTxtBx_Kommentti });
             ts1.Location = new System.Drawing.Point(3, 3);
             ts1.Name = "ts1";
             ts1.Size = new System.Drawing.Size(458, 25);
@@ -117,6 +131,7 @@ namespace VahtiApp
                 {
                     TarjousManager.lstKaikkiTajoukset[i].strKuvaus = strUKuvaus;
                     TarjousManager.lstKaikkiTajoukset[i].strKuvaushaettu = "true";
+                    TarjousManager.lstKaikkiTajoukset[i].strKommentti = TSTxtBx_Kommentti.Text;
                     break;
                 }
             }
@@ -143,6 +158,7 @@ namespace VahtiApp
                 {
                     TarjousManager.lstKaikkiTajoukset[i].strKuvaus = strUKuvaus;
                     TarjousManager.lstKaikkiTajoukset[i].strKuvaushaettu = "true";
+                    TarjousManager.lstKaikkiTajoukset[i].strKommentti = TSTxtBx_Kommentti.Text;
                     break;
                 }
             }
@@ -166,8 +182,10 @@ namespace VahtiApp
             {
                 if (TarjousManager.lstKaikkiTajoukset[i].iTarjNro == id)
                 {
-                    TarjousManager.lstKaikkiTajoukset[i].strKuvaus = "N/A";
+                    
                     TarjousManager.lstKaikkiTajoukset[i].strKuvaushaettu = "true";
+                    TarjousManager.lstKaikkiTajoukset[i].strFiltered = "true";
+                    TarjousManager.lstKaikkiTajoukset[i].strKommentti = TSTxtBx_Kommentti.Text;
                     break;
                 }
             }
@@ -176,12 +194,14 @@ namespace VahtiApp
         {
             string txt = wb.DocumentText;
             string strUKuvaus = Clipboard.GetText();
+            strUKuvaus = strUKuvaus.Replace("\n", "<br>\n");
             for (int i = 0; i < TarjousManager.lstKaikkiTajoukset.Count; i++)
             {
                 if (TarjousManager.lstKaikkiTajoukset[i].iTarjNro == id)
                 {
                     TarjousManager.lstKaikkiTajoukset[i].strKuvaus = strUKuvaus;
                     TarjousManager.lstKaikkiTajoukset[i].strKuvaushaettu = "true";
+                    TarjousManager.lstKaikkiTajoukset[i].strKommentti = TSTxtBx_Kommentti.Text;
                     break;
                 }
             }
