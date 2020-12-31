@@ -30,6 +30,9 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Frm_Tarjous));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.NUD_Kiinnostus = new System.Windows.Forms.NumericUpDown();
+            this.chkBx_Kiinnostaa = new System.Windows.Forms.CheckBox();
+            this.Brn_Esikatso = new System.Windows.Forms.Button();
             this.Btn_TDir = new System.Windows.Forms.Button();
             this.Btn_TDoc = new System.Windows.Forms.Button();
             this.Btn_VEL = new System.Windows.Forms.Button();
@@ -75,13 +78,15 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.wb_panel = new System.Windows.Forms.Panel();
             this.WB_tarous = new System.Windows.Forms.WebBrowser();
-            this.Brn_Esikatso = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NUD_Kiinnostus)).BeginInit();
             this.wb_panel.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.NUD_Kiinnostus);
+            this.panel1.Controls.Add(this.chkBx_Kiinnostaa);
             this.panel1.Controls.Add(this.Brn_Esikatso);
             this.panel1.Controls.Add(this.Btn_TDir);
             this.panel1.Controls.Add(this.Btn_TDoc);
@@ -130,6 +135,38 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(800, 523);
             this.panel1.TabIndex = 0;
+            // 
+            // NUD_Kiinnostus
+            // 
+            this.NUD_Kiinnostus.Location = new System.Drawing.Point(110, 270);
+            this.NUD_Kiinnostus.Maximum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+            this.NUD_Kiinnostus.Name = "NUD_Kiinnostus";
+            this.NUD_Kiinnostus.Size = new System.Drawing.Size(63, 20);
+            this.NUD_Kiinnostus.TabIndex = 43;
+            // 
+            // chkBx_Kiinnostaa
+            // 
+            this.chkBx_Kiinnostaa.AutoSize = true;
+            this.chkBx_Kiinnostaa.Location = new System.Drawing.Point(24, 270);
+            this.chkBx_Kiinnostaa.Name = "chkBx_Kiinnostaa";
+            this.chkBx_Kiinnostaa.Size = new System.Drawing.Size(80, 17);
+            this.chkBx_Kiinnostaa.TabIndex = 42;
+            this.chkBx_Kiinnostaa.Text = "checkBox1";
+            this.chkBx_Kiinnostaa.UseVisualStyleBackColor = true;
+            // 
+            // Brn_Esikatso
+            // 
+            this.Brn_Esikatso.Location = new System.Drawing.Point(190, 422);
+            this.Brn_Esikatso.Name = "Brn_Esikatso";
+            this.Brn_Esikatso.Size = new System.Drawing.Size(75, 23);
+            this.Brn_Esikatso.TabIndex = 41;
+            this.Brn_Esikatso.Text = "Preview";
+            this.Brn_Esikatso.UseVisualStyleBackColor = true;
+            this.Brn_Esikatso.Click += new System.EventHandler(this.Brn_Esikatso_Click);
             // 
             // Btn_TDir
             // 
@@ -528,16 +565,6 @@
             this.WB_tarous.Size = new System.Drawing.Size(403, 523);
             this.WB_tarous.TabIndex = 0;
             // 
-            // Brn_Esikatso
-            // 
-            this.Brn_Esikatso.Location = new System.Drawing.Point(190, 422);
-            this.Brn_Esikatso.Name = "Brn_Esikatso";
-            this.Brn_Esikatso.Size = new System.Drawing.Size(75, 23);
-            this.Brn_Esikatso.TabIndex = 41;
-            this.Brn_Esikatso.Text = "Preview";
-            this.Brn_Esikatso.UseVisualStyleBackColor = true;
-            this.Brn_Esikatso.Click += new System.EventHandler(this.Brn_Esikatso_Click);
-            // 
             // Frm_Tarjous
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -553,6 +580,7 @@
             this.Shown += new System.EventHandler(this.Frm_Tarjous_Shown);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.NUD_Kiinnostus)).EndInit();
             this.wb_panel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -608,5 +636,7 @@
         private System.Windows.Forms.Button Btn_VEL;
         private System.Windows.Forms.Button Btn_AL;
         private System.Windows.Forms.Button Brn_Esikatso;
+        private System.Windows.Forms.NumericUpDown NUD_Kiinnostus;
+        private System.Windows.Forms.CheckBox chkBx_Kiinnostaa;
     }
 }

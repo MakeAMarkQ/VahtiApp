@@ -29,7 +29,10 @@ namespace VahtiApp
             strRetVal += "</h1>" + "<br>"+Environment.NewLine;
             strRetVal += "<b> Hiukan ohjeita alkuun, <a name = \"Lista\"> " +
                 "uudet kohteet </a></b><br>" + "<br>"+Environment.NewLine;
-
+            strRetVal += "<b><span style = \"color: red;\">Ehdoton must</span></b><br>" + Environment.NewLine;
+            strRetVal += "<i><span style = \"color: red;\">Ehkä</span></i><br>" + Environment.NewLine;
+            strRetVal += "<i>Vaatii tutkimista</i><br>" + Environment.NewLine;
+            strRetVal += "Ei luokitusta<br>"+Environment.NewLine;
             strRetVal += " Ei muuta kuin tarjouksia lisää tekemään<br> " + Environment.NewLine +
                 "<ul>"+Environment.NewLine;
             

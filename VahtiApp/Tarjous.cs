@@ -12,12 +12,12 @@ namespace VahtiApp
         
 
         public const int LuokkaVersion = 20200610;
-        public string strKunta;
+        public string strKunta { get; set; }
         public string strTunnus { get; set; }
         public string strAlkuperainenLinkki { get; set; }
         public string strTajousDocLinkki { get; set; }
         public string strTarjousDirLinkki { get; set; }
-        private string strPrivPyynto;
+        private string strPrivPyynto { get; set; }
         public string strPyynto
         {
             get
@@ -94,6 +94,15 @@ namespace VahtiApp
         }
         public string strSuodatettu { get; internal set; }
         public string strVaihtoehtoLinkki { get; internal set; }
+        public string strKiinnostus
+        {
+            get { return iKiinnostus.ToString(); }
+            internal set
+            {
+                iKiinnostus = Convert.ToInt32(value);
+            }
+        }
+        public int iKiinnostus { get; set; }
 
         private DateTime dtMaaraAika;
         private DateTime dtJulkaistu;
@@ -121,6 +130,7 @@ namespace VahtiApp
             bPoista = false;
             strKommentti = "N/A";
             strSuodatettu = "N/A";
+            iKiinnostus = 0;
             iTarjNro =++nro;
 
 
@@ -142,14 +152,28 @@ namespace VahtiApp
         }
         public string ToHtmlHakemistoString(bool bShowId)
         {
+            //b,i
             String strRetVal = "<li>";
+
+
             if (bShowId)
                 strRetVal += iTarjNro;
-            strRetVal += "<input type=\"checkbox\" id=\"" + iTarjNro + "\" > " + strMaaraAika + " <a href = \"#Link_" + iTarjNro + "\">";
+            strRetVal += "<input type=\"checkbox\" id=\"" + iTarjNro + "\" > ";
+            if (iKiinnostus == 4) strRetVal += "<b><span style = \"color: red;\">";
+            if (iKiinnostus == 3) strRetVal += "<i><span style = \"color: red;\">";
+            if (iKiinnostus == 2) strRetVal += "<i>";
+            
+            strRetVal += strMaaraAika;
+            if (iKiinnostus == 4) strRetVal += "</span></b>";
+            if (iKiinnostus == 3) strRetVal += "</span></i>";
+            if (iKiinnostus == 2) strRetVal += "</i>";
+            strRetVal += " <a href = \"#Link_" + iTarjNro + "\">";
             strRetVal += strPyynto;
             if (!strKommentti.Equals("N/A"))
                 strRetVal += " (<span style = \"color: red;\">" + strKommentti + "</span> )";
-            strRetVal += "</a></li>";
+            strRetVal += "</a>";
+
+            strRetVal += "</li>";
             return strRetVal;
         }
         public string ToHtmlHakemistoStringB(bool bChecked)

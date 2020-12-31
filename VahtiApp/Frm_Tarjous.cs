@@ -44,6 +44,7 @@ namespace VahtiApp
             TxtBx_VaihtoehtoLinkki.Text = clEditTarjous.strVaihtoehtoLinkki;
             ChckBx_Filtered.Checked = clEditTarjous.strFiltered.ToLower().Equals("true");
             ChckBx_Kuvaushaettu.Checked = clEditTarjous.strKuvaushaettu.ToLower().Equals("true");
+            NUD_Kiinnostus.Value = clEditTarjous.iKiinnostus;
             TxtBx_Filters.Text = clEditTarjous.strSuodatettu;
 
 
@@ -72,6 +73,7 @@ namespace VahtiApp
             clEditTarjous.strFiltered = ChckBx_Filtered.Checked.ToString();
             clEditTarjous.strKuvaushaettu = ChckBx_Kuvaushaettu.Checked.ToString();
             clEditTarjous.strSuodatettu= TxtBx_Filters.Text;
+            clEditTarjous.iKiinnostus = (int)NUD_Kiinnostus.Value;
             clEditTarjous.kyseinen(clEditTarjous);
             this.Hide();
         }

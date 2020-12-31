@@ -32,12 +32,14 @@ namespace VahtiApp
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Frm_Vahti_Main));
             this.Tmr_Vahti = new System.Windows.Forms.Timer(this.components);
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.TsStsLbl_Vahti_ToDo = new System.Windows.Forms.ToolStripStatusLabel();
             this.TSSttsBr_Vahti = new System.Windows.Forms.ToolStripProgressBar();
             this.TsStpLbl_Vahti = new System.Windows.Forms.ToolStripStatusLabel();
             this.SplCnt_Vahti = new System.Windows.Forms.SplitContainer();
+            this.CBx_ID = new System.Windows.Forms.CheckBox();
             this.btn_All = new System.Windows.Forms.Button();
             this.btn_EiKiinnosta = new System.Windows.Forms.Button();
             this.Btn_TalletaRaportti = new System.Windows.Forms.Button();
@@ -73,10 +75,14 @@ namespace VahtiApp
             this.tsWB = new System.Windows.Forms.ToolStrip();
             this.TSSep = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.TSTxtBx_Kommentti = new System.Windows.Forms.ToolStripTextBox();
+            this.tsDDBtn_Kiinnostus = new System.Windows.Forms.ToolStripDropDownButton();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.tutkiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.kiinnostavaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mustToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RchTxtBx_Vahti = new System.Windows.Forms.RichTextBox();
             this.Tmr_SivuVahti = new System.Windows.Forms.Timer(this.components);
-            this.CBx_ID = new System.Windows.Forms.CheckBox();
+            this.TSCmBx_Kiinnostus = new System.Windows.Forms.ToolStripComboBox();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SplCnt_Vahti)).BeginInit();
             this.SplCnt_Vahti.Panel1.SuspendLayout();
@@ -167,6 +173,16 @@ namespace VahtiApp
             this.SplCnt_Vahti.Size = new System.Drawing.Size(1154, 548);
             this.SplCnt_Vahti.SplitterDistance = 568;
             this.SplCnt_Vahti.TabIndex = 22;
+            // 
+            // CBx_ID
+            // 
+            this.CBx_ID.AutoSize = true;
+            this.CBx_ID.Location = new System.Drawing.Point(202, 90);
+            this.CBx_ID.Name = "CBx_ID";
+            this.CBx_ID.Size = new System.Drawing.Size(72, 17);
+            this.CBx_ID.TabIndex = 46;
+            this.CBx_ID.Text = "Show IDs";
+            this.CBx_ID.UseVisualStyleBackColor = true;
             // 
             // btn_All
             // 
@@ -488,7 +504,8 @@ namespace VahtiApp
             this.tsWB.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.TSSep,
             this.toolStripSeparator2,
-            this.TSTxtBx_Kommentti});
+            this.tsDDBtn_Kiinnostus,
+            this.TSCmBx_Kiinnostus});
             this.tsWB.Location = new System.Drawing.Point(3, 3);
             this.tsWB.Name = "tsWB";
             this.tsWB.Size = new System.Drawing.Size(458, 25);
@@ -505,11 +522,44 @@ namespace VahtiApp
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
-            // TSTxtBx_Kommentti
+            // tsDDBtn_Kiinnostus
             // 
-            this.TSTxtBx_Kommentti.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.TSTxtBx_Kommentti.Name = "TSTxtBx_Kommentti";
-            this.TSTxtBx_Kommentti.Size = new System.Drawing.Size(100, 25);
+            this.tsDDBtn_Kiinnostus.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.tsDDBtn_Kiinnostus.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1,
+            this.tutkiToolStripMenuItem,
+            this.kiinnostavaToolStripMenuItem,
+            this.mustToolStripMenuItem});
+            this.tsDDBtn_Kiinnostus.Image = ((System.Drawing.Image)(resources.GetObject("tsDDBtn_Kiinnostus.Image")));
+            this.tsDDBtn_Kiinnostus.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsDDBtn_Kiinnostus.Name = "tsDDBtn_Kiinnostus";
+            this.tsDDBtn_Kiinnostus.Size = new System.Drawing.Size(80, 22);
+            this.tsDDBtn_Kiinnostus.Text = "Kiinstavuus";
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem1.Text = "0- Ei Kiinnsotaa";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
+            // 
+            // tutkiToolStripMenuItem
+            // 
+            this.tutkiToolStripMenuItem.Name = "tutkiToolStripMenuItem";
+            this.tutkiToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.tutkiToolStripMenuItem.Text = "1- tutki";
+            // 
+            // kiinnostavaToolStripMenuItem
+            // 
+            this.kiinnostavaToolStripMenuItem.Name = "kiinnostavaToolStripMenuItem";
+            this.kiinnostavaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.kiinnostavaToolStripMenuItem.Text = "2- kiinnostava";
+            // 
+            // mustToolStripMenuItem
+            // 
+            this.mustToolStripMenuItem.Name = "mustToolStripMenuItem";
+            this.mustToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.mustToolStripMenuItem.Text = "3 - Must";
             // 
             // RchTxtBx_Vahti
             // 
@@ -527,15 +577,19 @@ namespace VahtiApp
             // 
             this.Tmr_SivuVahti.Tick += new System.EventHandler(this.Tmr_SivuVahti_Tick);
             // 
-            // CBx_ID
+            // TSCmBx_Kiinnostus
             // 
-            this.CBx_ID.AutoSize = true;
-            this.CBx_ID.Location = new System.Drawing.Point(202, 90);
-            this.CBx_ID.Name = "CBx_ID";
-            this.CBx_ID.Size = new System.Drawing.Size(72, 17);
-            this.CBx_ID.TabIndex = 46;
-            this.CBx_ID.Text = "Show IDs";
-            this.CBx_ID.UseVisualStyleBackColor = true;
+            this.TSCmBx_Kiinnostus.Items.AddRange(new object[] {
+            "0 - EiKäsitelty",
+            "1 - Ei Kiinnosta",
+            "2- Tutkitaan",
+            "3 - Ehkä",
+            "4 - Must"});
+            this.TSCmBx_Kiinnostus.MaxDropDownItems = 5;
+            this.TSCmBx_Kiinnostus.Name = "TSCmBx_Kiinnostus";
+            this.TSCmBx_Kiinnostus.Size = new System.Drawing.Size(121, 25);
+            this.TSCmBx_Kiinnostus.Sorted = true;
+            this.TSCmBx_Kiinnostus.Text = "0 - EiKäsitelty";
             // 
             // Frm_Vahti_Main
             // 
@@ -621,7 +675,12 @@ namespace VahtiApp
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.Button btn_EiKiinnosta;
         private System.Windows.Forms.Button btn_All;
-        private System.Windows.Forms.ToolStripTextBox TSTxtBx_Kommentti;
         private System.Windows.Forms.CheckBox CBx_ID;
+        private System.Windows.Forms.ToolStripDropDownButton tsDDBtn_Kiinnostus;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem tutkiToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem kiinnostavaToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mustToolStripMenuItem;
+        private System.Windows.Forms.ToolStripComboBox TSCmBx_Kiinnostus;
     }
 }
