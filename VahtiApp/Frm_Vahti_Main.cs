@@ -766,7 +766,7 @@ namespace VahtiApp
 
                 lbl_timer.Text = $"Vuorossa {iHaettu}/{iHakematta}";
                 WebSivut WebS = new WebSivut();
-                TabPage tab1 = WebS.LuoSivu(lstEiKuvaushaettu, i);
+                TabPage tab1 = WebS.LuoSivu(lstEiKuvaushaettu, i, ref TbCnt_Vahti);
                 TbCnt_Vahti.Controls.Add(tab1);
                 iHaettu++;
                 if (iHaettu % 20 == 1)

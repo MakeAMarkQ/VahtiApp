@@ -22,6 +22,7 @@ namespace VahtiApp
         private ToolStripMenuItem TSMI_2_Tutki;
         private ToolStripMenuItem TSMI_3_Ehkä;
         private ToolStripMenuItem TSMI_4_Must;
+        TabControl Tabcntr;
         int id;
         //TarjousManager TrjMng;
         public WebSivut()
@@ -30,8 +31,9 @@ namespace VahtiApp
             //TrjMng = new TarjousManager();
             //lstTarjous=TrjMng.HaeLista();
         }
-        public TabPage LuoSivu(List<Tarjous> inTarjous, int inTarjNro)
+        public TabPage LuoSivu(List<Tarjous> inTarjous, int inTarjNro, ref TabControl InTcntr)
         {
+            Tabcntr = InTcntr;
             lstTarjous = inTarjous;
             id = lstTarjous[inTarjNro].iTarjNro;
             ToolStripButton tsbtn_Hilma = new ToolStripButton();
@@ -192,8 +194,8 @@ namespace VahtiApp
                 iLK = strInner.ToLower().LastIndexOf(strLyhKuv, iHN);
             }
             string strUKuvaus = strInner.Substring(iLK, iHN - iLK);
-            strUKuvaus = strUKuvaus.Remove(strUKuvaus.LastIndexOf("<p data"));
-            strUKuvaus = strUKuvaus.Remove(0, strUKuvaus.IndexOf("<p data") );
+            strUKuvaus = strUKuvaus.Remove(strUKuvaus.LastIndexOf("<div class"));
+            strUKuvaus = strUKuvaus.Remove(0, strUKuvaus.IndexOf("<div class") );
             for (int i = 0; i < TarjousManager.lstKaikkiTajoukset.Count; i++)
             {
                 if (TarjousManager.lstKaikkiTajoukset[i].iTarjNro == id)
@@ -205,6 +207,12 @@ namespace VahtiApp
                     break;
                 }
             }
+            int iSivu = Tabcntr.TabPages.IndexOf(Tabcntr.SelectedTab);
+            Tabcntr.TabPages.RemoveAt(iSivu);
+            if (iSivu < Tabcntr.TabPages.Count)
+                Tabcntr.SelectTab(iSivu);
+            else
+                Tabcntr.SelectTab(iSivu - 1);
         }
 
         private void H_tsbtn_Pien_Click(object sender, EventArgs e)
@@ -233,6 +241,12 @@ namespace VahtiApp
                     break;
                 }
             }
+            int iSivu = Tabcntr.TabPages.IndexOf(Tabcntr.SelectedTab);
+            Tabcntr.TabPages.RemoveAt(iSivu);
+            if (iSivu < Tabcntr.TabPages.Count)
+                Tabcntr.SelectTab(iSivu);
+            else
+                Tabcntr.SelectTab(iSivu - 1);
 
         }
 
@@ -257,6 +271,16 @@ namespace VahtiApp
                     break;
                 }
             }
+
+            int iSivu = Tabcntr.TabPages.IndexOf(Tabcntr.SelectedTab);
+            Tabcntr.TabPages.RemoveAt(iSivu);
+            if (iSivu < Tabcntr.TabPages.Count)
+                Tabcntr.SelectTab(iSivu);
+            else
+                Tabcntr.SelectTab(iSivu - 1);
+
+
+
         }
         private void H_tsbtn_Paste_tarjous_Click(object sender, EventArgs e)
         {
@@ -274,6 +298,12 @@ namespace VahtiApp
                     break;
                 }
             }
+            int iSivu = Tabcntr.TabPages.IndexOf(Tabcntr.SelectedTab);
+            Tabcntr.TabPages.RemoveAt(iSivu);
+            if (iSivu < Tabcntr.TabPages.Count)
+                Tabcntr.SelectTab(iSivu);
+            else
+                Tabcntr.SelectTab(iSivu - 1);
         }
         private void TSMI_0_Tuntematon_Click(object sender, EventArgs e)
         {
