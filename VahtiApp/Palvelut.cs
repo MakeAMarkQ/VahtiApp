@@ -107,7 +107,7 @@ namespace VahtiApp
         }
         internal virtual string GetKuvaus(string strUri)
         {
-            return string.Empty; ;
+            return string.Empty; 
         }
     }
 }

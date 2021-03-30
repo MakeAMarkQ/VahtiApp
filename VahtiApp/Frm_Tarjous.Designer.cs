@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Frm_Tarjous));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.rTxtBx_Kuvaus = new System.Windows.Forms.RichTextBox();
             this.NUD_Kiinnostus = new System.Windows.Forms.NumericUpDown();
             this.chkBx_Kiinnostaa = new System.Windows.Forms.CheckBox();
             this.Brn_Esikatso = new System.Windows.Forms.Button();
@@ -44,7 +45,6 @@
             this.btnTDL = new System.Windows.Forms.Button();
             this.btnVEL = new System.Windows.Forms.Button();
             this.btnAP = new System.Windows.Forms.Button();
-            this.TxtBx_Kuvaus = new System.Windows.Forms.TextBox();
             this.Lbl_Kuvaus = new System.Windows.Forms.Label();
             this.ChckBx_Kuvaushaettu = new System.Windows.Forms.CheckBox();
             this.ChckBx_Filtered = new System.Windows.Forms.CheckBox();
@@ -78,6 +78,7 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.wb_panel = new System.Windows.Forms.Panel();
             this.WB_tarous = new System.Windows.Forms.WebBrowser();
+            this.Btn_LessMore = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NUD_Kiinnostus)).BeginInit();
             this.wb_panel.SuspendLayout();
@@ -85,6 +86,8 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.Btn_LessMore);
+            this.panel1.Controls.Add(this.rTxtBx_Kuvaus);
             this.panel1.Controls.Add(this.NUD_Kiinnostus);
             this.panel1.Controls.Add(this.chkBx_Kiinnostaa);
             this.panel1.Controls.Add(this.Brn_Esikatso);
@@ -99,7 +102,6 @@
             this.panel1.Controls.Add(this.btnTDL);
             this.panel1.Controls.Add(this.btnVEL);
             this.panel1.Controls.Add(this.btnAP);
-            this.panel1.Controls.Add(this.TxtBx_Kuvaus);
             this.panel1.Controls.Add(this.Lbl_Kuvaus);
             this.panel1.Controls.Add(this.ChckBx_Kuvaushaettu);
             this.panel1.Controls.Add(this.ChckBx_Filtered);
@@ -135,6 +137,15 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(800, 523);
             this.panel1.TabIndex = 0;
+            // 
+            // rTxtBx_Kuvaus
+            // 
+            this.rTxtBx_Kuvaus.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rTxtBx_Kuvaus.Location = new System.Drawing.Point(295, 226);
+            this.rTxtBx_Kuvaus.Name = "rTxtBx_Kuvaus";
+            this.rTxtBx_Kuvaus.Size = new System.Drawing.Size(493, 219);
+            this.rTxtBx_Kuvaus.TabIndex = 30;
+            this.rTxtBx_Kuvaus.Text = "";
             // 
             // NUD_Kiinnostus
             // 
@@ -279,16 +290,6 @@
             this.btnAP.Text = "=>";
             this.btnAP.UseVisualStyleBackColor = true;
             this.btnAP.Click += new System.EventHandler(this.btnAP_Click);
-            // 
-            // TxtBx_Kuvaus
-            // 
-            this.TxtBx_Kuvaus.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TxtBx_Kuvaus.Location = new System.Drawing.Point(295, 226);
-            this.TxtBx_Kuvaus.Multiline = true;
-            this.TxtBx_Kuvaus.Name = "TxtBx_Kuvaus";
-            this.TxtBx_Kuvaus.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.TxtBx_Kuvaus.Size = new System.Drawing.Size(493, 219);
-            this.TxtBx_Kuvaus.TabIndex = 30;
             // 
             // Lbl_Kuvaus
             // 
@@ -565,6 +566,16 @@
             this.WB_tarous.Size = new System.Drawing.Size(403, 523);
             this.WB_tarous.TabIndex = 0;
             // 
+            // Btn_LessMore
+            // 
+            this.Btn_LessMore.Location = new System.Drawing.Point(213, 359);
+            this.Btn_LessMore.Name = "Btn_LessMore";
+            this.Btn_LessMore.Size = new System.Drawing.Size(52, 28);
+            this.Btn_LessMore.TabIndex = 44;
+            this.Btn_LessMore.Text = "Less/More";
+            this.Btn_LessMore.UseVisualStyleBackColor = true;
+            this.Btn_LessMore.Click += new System.EventHandler(this.Btn_LessMore_Click);
+            // 
             // Frm_Tarjous
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -620,7 +631,7 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.CheckBox ChckBx_Kuvaushaettu;
         private System.Windows.Forms.CheckBox ChckBx_Filtered;
-        private System.Windows.Forms.TextBox TxtBx_Kuvaus;
+        //private System.Windows.Forms.TextBox TxtBx_Kuvaus;
         private System.Windows.Forms.Label Lbl_Kuvaus;
         private System.Windows.Forms.Button btnTdirL;
         private System.Windows.Forms.Button btnTDL;
@@ -638,5 +649,7 @@
         private System.Windows.Forms.Button Brn_Esikatso;
         private System.Windows.Forms.NumericUpDown NUD_Kiinnostus;
         private System.Windows.Forms.CheckBox chkBx_Kiinnostaa;
+        private System.Windows.Forms.RichTextBox rTxtBx_Kuvaus;
+        private System.Windows.Forms.Button Btn_LessMore;
     }
 }

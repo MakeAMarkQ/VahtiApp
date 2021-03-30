@@ -36,7 +36,7 @@ namespace VahtiApp
             TxtBx_Pyynto.Text = clEditTarjous.strPyynto;
             TxtBx_MaaraAika.Text = clEditTarjous.strMaaraAika;
             TxtBx_DataBase.Text = clEditTarjous.strDataBase;
-            TxtBx_Kuvaus.Text = clEditTarjous.strKuvaus;
+            rTxtBx_Kuvaus.Text = clEditTarjous.strKuvaus;
             TxtBx_Kommentti.Text = clEditTarjous.strKommentti; 
             
             TxtBx_Julkaistu.Text = clEditTarjous.strJulkaistu;
@@ -66,7 +66,7 @@ namespace VahtiApp
             clEditTarjous.strMaaraAika = TxtBx_MaaraAika.Text;
             clEditTarjous.strDataBase = TxtBx_DataBase.Text;
             clEditTarjous.strKommentti = TxtBx_Kommentti.Text;
-            clEditTarjous.strKuvaus = TxtBx_Kuvaus.Text;
+            clEditTarjous.strKuvaus = rTxtBx_Kuvaus.Text;
             clEditTarjous.strJulkaistu = TxtBx_Julkaistu.Text;
             clEditTarjous.strIlmoitusTyyppi = TxtBx_IlmoitusTyyppi.Text;
             clEditTarjous.strVaihtoehtoLinkki = TxtBx_VaihtoehtoLinkki.Text;
@@ -102,25 +102,30 @@ namespace VahtiApp
         {
             string strUKuvaus = Clipboard.GetText();
             strUKuvaus = strUKuvaus.Replace("\n", "<br>\n");
-            TxtBx_Kuvaus.Text += "<br>" + strUKuvaus;
+            int iEnd = rTxtBx_Kuvaus.Text.Length;
+            rTxtBx_Kuvaus.Text += "<br>" + strUKuvaus;
+            rTxtBx_Kuvaus.SelectionStart = iEnd;
+            //rTxtBx_Kuvaus.SelectionLength = 0;
+            rTxtBx_Kuvaus.Focus();
         }
 
         private void Btn_AddBr_Click(object sender, EventArgs e)
         {
-            //string strTemp = TxtBx_Kuvaus.Text;
-            int iStart = TxtBx_Kuvaus.SelectionStart;
-            if (TxtBx_Kuvaus.SelectionStart > -1)
+            //string strTemp = rTxtBx_Kuvaus.Text;
+            int iStart = rTxtBx_Kuvaus.SelectionStart;
+            if (rTxtBx_Kuvaus.SelectionStart > -1)
             {
 
-                TxtBx_Kuvaus.Text = TxtBx_Kuvaus.Text.Insert(TxtBx_Kuvaus.SelectionStart, "<br>");
-                TxtBx_Kuvaus.SelectionStart = iStart;
-                TxtBx_Kuvaus.SelectionLength = 0;
+                rTxtBx_Kuvaus.Text = rTxtBx_Kuvaus.Text.Insert(rTxtBx_Kuvaus.SelectionStart, "<br>");
+                rTxtBx_Kuvaus.SelectionStart = iStart;
+                //rTxtBx_Kuvaus.SelectionLength = 0;
+                rTxtBx_Kuvaus.Focus();
             }
             else
-                TxtBx_Kuvaus.Text += "<br>";
-            //TxtBx_Kuvaus.Text= strTemp;
-            //TxtBx_Kuvaus.Refresh();
-            //TxtBx_Kuvaus
+                rTxtBx_Kuvaus.Text += "<br>";
+            //rTxtBx_Kuvaus.Text= strTemp;
+            //rTxtBx_Kuvaus.Refresh();
+            //rTxtBx_Kuvaus
             //this.Refresh();
         }
 
@@ -151,10 +156,34 @@ namespace VahtiApp
         private void Brn_Esikatso_Click(object sender, EventArgs e)
         {
             string strTmpKuvaus = clEditTarjous.strKuvaus;
-            clEditTarjous.strKuvaus = TxtBx_Kuvaus.Text;
+            clEditTarjous.strKuvaus = rTxtBx_Kuvaus.Text;
             string strTmpHtml=clEditTarjous.ToHtmlKokoString();
             WB_tarous.DocumentText = strTmpHtml;
             clEditTarjous.strKuvaus = strTmpKuvaus;
+        }
+
+        private void Btn_LessMore_Click(object sender, EventArgs e)
+        {
+            int iHteko = rTxtBx_Kuvaus.Text.IndexOf("Hankintasopimuksen tekoperusteet");
+            int iHkohd = rTxtBx_Kuvaus.Text.IndexOf("Hankinnan kohde");
+            int iStart = iHteko;
+            if(iStart==-1)
+                iStart = iHkohd;
+            if (rTxtBx_Kuvaus.SelectionStart > -1)
+            {
+
+                //rTxtBx_Kuvaus.Text = rTxtBx_Kuvaus.Text.Insert(rTxtBx_Kuvaus.SelectionStart, "<br>");
+                //<span class="dots">...</span>
+                //<span class="more" style="display: Mone;">
+                rTxtBx_Kuvaus.SelectionStart = iStart;
+                rTxtBx_Kuvaus.Focus();
+                //</span>
+            //</ p >
+            //< button onclick = "readMore('buda')" class="myBtn">Read more</button>
+
+            }
+            //else
+            //    rTxtBx_Kuvaus.Text += "<br>";//Hankintasopimuksen tekoperusteet //Hankinnan kohde
         }
     }
 }

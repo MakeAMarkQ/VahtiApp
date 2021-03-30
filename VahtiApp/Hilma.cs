@@ -17,7 +17,8 @@ namespace VahtiApp
             uriBuilder = new UriBuilder();
             uriBuilder.Scheme = "http";
             uriBuilder.Host = "www.hankintailmoitukset.fi";
-            uriBuilder.Path = "top=75&nuts=FI1D&nuts=FI1C&pa=2020-06-02&of=datePublished&od=desc";
+            //uriBuilder.Path = "top=75&nuts=FI1D&nuts=FI1C&pa=2020-06-02&of=datePublished&od=desc";
+            uriBuilder.Path = "top=75&nuts=FI1D&nuts=FI1C&of=datePublished&od=desc";
             uri = uriBuilder.Uri;
         }
         public Hilma(string inHost, string inPath)
