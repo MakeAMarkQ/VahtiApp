@@ -39,6 +39,7 @@ namespace VahtiApp
             this.TSSttsBr_Vahti = new System.Windows.Forms.ToolStripProgressBar();
             this.TsStpLbl_Vahti = new System.Windows.Forms.ToolStripStatusLabel();
             this.SplCnt_Vahti = new System.Windows.Forms.SplitContainer();
+            this.button1 = new System.Windows.Forms.Button();
             this.CBx_ID = new System.Windows.Forms.CheckBox();
             this.btn_All = new System.Windows.Forms.Button();
             this.btn_EiKiinnosta = new System.Windows.Forms.Button();
@@ -71,7 +72,8 @@ namespace VahtiApp
             this.TbCnt_Vahti = new System.Windows.Forms.TabControl();
             this.PG_Vahti = new System.Windows.Forms.TabPage();
             this.WBPanel = new System.Windows.Forms.Panel();
-            this.WBrHilma = new CefSharp.WinForms.ChromiumWebBrowser();
+            this.WebBrowser1 = new System.Windows.Forms.WebBrowser();
+            this.WBrHilma = new System.Windows.Forms.WebBrowser();
             this.tsWB = new System.Windows.Forms.ToolStrip();
             this.TSSep = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -84,8 +86,6 @@ namespace VahtiApp
             this.TSTXBX_Palkki = new System.Windows.Forms.ToolStripTextBox();
             this.RchTxtBx_Vahti = new System.Windows.Forms.RichTextBox();
             this.Tmr_SivuVahti = new System.Windows.Forms.Timer(this.components);
-            this.webBrowser1 = new CefSharp.WinForms.ChromiumWebBrowser();
-            this.button1 = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SplCnt_Vahti)).BeginInit();
             this.SplCnt_Vahti.Panel1.SuspendLayout();
@@ -177,6 +177,15 @@ namespace VahtiApp
             this.SplCnt_Vahti.Size = new System.Drawing.Size(1154, 548);
             this.SplCnt_Vahti.SplitterDistance = 568;
             this.SplCnt_Vahti.TabIndex = 22;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(351, 6);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(78, 19);
+            this.button1.TabIndex = 47;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
             // 
             // CBx_ID
             // 
@@ -484,7 +493,7 @@ namespace VahtiApp
             // 
             // WBPanel
             // 
-            this.WBPanel.Controls.Add(this.webBrowser1);
+            this.WBPanel.Controls.Add(this.WebBrowser1);
             this.WBPanel.Controls.Add(this.WBrHilma);
             this.WBPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.WBPanel.Location = new System.Drawing.Point(3, 28);
@@ -492,16 +501,24 @@ namespace VahtiApp
             this.WBPanel.Size = new System.Drawing.Size(458, 304);
             this.WBPanel.TabIndex = 12;
             // 
+            // WebBrowser1
+            // 
+            this.WebBrowser1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.WebBrowser1.Location = new System.Drawing.Point(0, 0);
+            this.WebBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
+            this.WebBrowser1.Name = "WebBrowser1";
+            this.WebBrowser1.ScriptErrorsSuppressed = true;
+            this.WebBrowser1.Size = new System.Drawing.Size(458, 304);
+            this.WebBrowser1.TabIndex = 12;
+            // 
             // WBrHilma
             // 
             this.WBrHilma.Dock = System.Windows.Forms.DockStyle.Fill;
             this.WBrHilma.Location = new System.Drawing.Point(0, 0);
             this.WBrHilma.MinimumSize = new System.Drawing.Size(20, 20);
             this.WBrHilma.Name = "WBrHilma";
-            //this.WBrHilma.ScriptErrorsSuppressed = true;
             this.WBrHilma.Size = new System.Drawing.Size(458, 304);
             this.WBrHilma.TabIndex = 11;
-            //this.WBrHilma.Url = new System.Uri("", System.UriKind.Relative);
             // 
             // tsWB
             // 
@@ -540,30 +557,31 @@ namespace VahtiApp
             this.tsDDBtn_Kiinnostus.Name = "tsDDBtn_Kiinnostus";
             this.tsDDBtn_Kiinnostus.Size = new System.Drawing.Size(80, 22);
             this.tsDDBtn_Kiinnostus.Text = "Kiinstavuus";
+            this.tsDDBtn_Kiinnostus.Click += new System.EventHandler(this.tsDDBtn_Kiinnostus_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(155, 22);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItem1.Text = "0- Ei Kiinnsotaa";
             this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // tutkiToolStripMenuItem
             // 
             this.tutkiToolStripMenuItem.Name = "tutkiToolStripMenuItem";
-            this.tutkiToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.tutkiToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.tutkiToolStripMenuItem.Text = "1- tutki";
             // 
             // kiinnostavaToolStripMenuItem
             // 
             this.kiinnostavaToolStripMenuItem.Name = "kiinnostavaToolStripMenuItem";
-            this.kiinnostavaToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.kiinnostavaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.kiinnostavaToolStripMenuItem.Text = "2- kiinnostava";
             // 
             // mustToolStripMenuItem
             // 
             this.mustToolStripMenuItem.Name = "mustToolStripMenuItem";
-            this.mustToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.mustToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.mustToolStripMenuItem.Text = "3 - Must";
             // 
             // TSCmBx_Kiinnostus
@@ -602,25 +620,6 @@ namespace VahtiApp
             // Tmr_SivuVahti
             // 
             this.Tmr_SivuVahti.Tick += new System.EventHandler(this.Tmr_SivuVahti_Tick);
-            // 
-            // webBrowser1
-            // 
-            this.webBrowser1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.webBrowser1.Location = new System.Drawing.Point(0, 0);
-            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.Size = new System.Drawing.Size(458, 304);
-            this.webBrowser1.TabIndex = 12;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(351, 6);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(78, 19);
-            this.button1.TabIndex = 47;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Frm_Vahti_Main
             // 
@@ -661,7 +660,7 @@ namespace VahtiApp
 
         private Hilma clHilma;
         private Tulostukset ClPrintti;
-        private System.Collections.Generic.List<CefSharp.WinForms.ChromiumWebBrowser> lstBrowsers;
+        private System.Collections.Generic.List<System.Windows.Forms.WebBrowser> lstBrowsers;
         private System.Collections.Generic.List<string> lstHilmaWebPages;
         private System.Windows.Forms.Timer Tmr_Vahti;
         private System.Windows.Forms.StatusStrip statusStrip1;
@@ -700,7 +699,7 @@ namespace VahtiApp
         private System.Windows.Forms.Button btn_Kasittele;
         private System.Windows.Forms.Button Btn_TalletaRaportti;
         private System.Windows.Forms.Panel WBPanel;
-        private CefSharp.WinForms.ChromiumWebBrowser WBrHilma;
+        private System.Windows.Forms.WebBrowser WBrHilma;
         private System.Windows.Forms.ToolStrip tsWB;
         private System.Windows.Forms.ToolStripSeparator TSSep;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
@@ -714,7 +713,7 @@ namespace VahtiApp
         private System.Windows.Forms.ToolStripMenuItem mustToolStripMenuItem;
         private System.Windows.Forms.ToolStripComboBox TSCmBx_Kiinnostus;
         private System.Windows.Forms.ToolStripTextBox TSTXBX_Palkki;
-        private CefSharp.WinForms.ChromiumWebBrowser webBrowser1;
+        private System.Windows.Forms.WebBrowser WebBrowser1;
         private System.Windows.Forms.Button button1;
     }
 }
